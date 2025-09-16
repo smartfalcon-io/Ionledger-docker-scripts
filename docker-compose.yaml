@@ -386,3 +386,8 @@ volumes:
   traction-wallet:
   endorser-wallet:
   endorser-wallet-1:
+
+
+networks:
+  app-network:
+    driver: bridge
