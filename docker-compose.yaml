@@ -357,9 +357,9 @@ services:
       - "3000:80"
     networks:
       - app-network
-    # environment:
-    #   - REACT_APP_API_BASE=${REACT_APP_API_BASE}
-    #   - REACT_APP_FRONTEND_BASE=${REACT_APP_FRONTEND_BASE}
+    environment:
+    - API_BASE=${REACT_APP_API_BASE}
+    - API_MOBILE_BASE=${REACT_APP_API_MOBILE_BASE}
 
   issuer-apis: 
     image: udaykumargoli/batterypassport_issuer_apis-app:latest
