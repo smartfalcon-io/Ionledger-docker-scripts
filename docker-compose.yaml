@@ -348,7 +348,58 @@ services:
       - "1080:1080"
       - "1025:1025"
 
+
+  ion-ledger-web-ui: 
+    image: udaykumargoli/ion-ledger-web-ui:latest
+    restart: unless-stopped
+    container_name: ion-ledger-web-ui
+    ports:
+      - "3000:80"
+    networks:
+      - app-network
+    # environment:
+    #   - REACT_APP_API_BASE=${REACT_APP_API_BASE}
+    #   - REACT_APP_FRONTEND_BASE=${REACT_APP_FRONTEND_BASE}
+
+  issuer-apis: 
+    image: udaykumargoli/batterypassport_issuer_apis-app:latest
+    restart: unless-stopped
+    container_name: issuer-apis
+    ports:
+      - "8087:8087"
+    networks: 
+      - app-network
+    environment:
+      - BASE_URL=${BASE_URL}
+      - ISSUE_TENANT_ID=${ISSUE_TENANT_ID}
+      - ISSUE_WALLET_KEY=${ISSUE_WALLET_KEY}
+      - FETCH_TENANT_ID=${FETCH_TENANT_ID}
+      - FETCH_WALLET_KEY=${FETCH_WALLET_KEY}
+      - ISSUER_WALLET_ID=${ISSUER_WALLET_ID}
+      - ISSUER_WALLET_KEY=${ISSUER_WALLET_KEY}
+      - HOLDER_WALLET_ID=${HOLDER_WALLET_ID}
+      - HOLDER_WALLET_KEY=${HOLDER_WALLET_KEY}
+      - VERIFIER_WALLET_ID=${VERIFIER_WALLET_ID}
+      - VERIFIER_WALLET_KEY=${VERIFIER_WALLET_KEY}
+      - VERIFIER_TENANT_ID=${VERIFIER_TENANT_ID}
+      - CONNECTION_ID=${CONNECTION_ID}
+      - ISSUER_DID=${ISSUER_DID}
+      - SCHEMA_ID=${SCHEMA_ID}
+      - SCHEMA_ISSUER_DID=${SCHEMA_ISSUER_DID}
+      - SCHEMA_NAME=${SCHEMA_NAME}
+      - SCHEMA_VERSION=${SCHEMA_VERSION}
+      - CRED_DEF_ID=${CRED_DEF_ID}
+      - KEYCLOAK_URL=${KEYCLOAK_URL}
+      - REALM=${REALM}
+      - CLIENT_ID=${CLIENT_ID}
+      - CLIENT_SECRET=${CLIENT_SECRET}
+
+
 volumes:
   traction-wallet:
   endorser-wallet:
   endorser-wallet-1:
+
+networks:
+  app-network:
+    driver: bridge
