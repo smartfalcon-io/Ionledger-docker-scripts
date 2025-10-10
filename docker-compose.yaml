@@ -6,6 +6,9 @@ services:
       - TRACTION_ACAPY_HTTP_PORT=${TRACTION_ACAPY_HTTP_PORT}
     ports:
       - 4052:4040
+    networks:
+      - app-network
+ 
     command: http traction-agent:${TRACTION_ACAPY_HTTP_PORT} --log stdout
 
   traction-acapy-image-builder:
@@ -84,6 +87,8 @@ services:
     ports:
       - ${TRACTION_ACAPY_ADMIN_PORT}:${TRACTION_ACAPY_ADMIN_PORT}
       - ${TRACTION_ACAPY_HTTP_PORT}:${TRACTION_ACAPY_HTTP_PORT}
+    networks:
+      - app-network
     entrypoint: /bin/bash
     command: ["-c", "sleep 5; ./ngrok-wait.sh"]
     volumes:
@@ -100,6 +105,9 @@ services:
       - POSTGRES_DB=${POSTGRESQL_DB}
     ports:
       - ${POSTGRESQL_PORT}:5432
+    networks:
+      - app-network
+     
     volumes:
       - traction-wallet:/var/lib/postgresql/data
     healthcheck:
@@ -135,6 +143,8 @@ services:
       - SERVER_SMTP_PORT=1025
     ports:
       - ${TENANT_UI_PORT}:8080
+    networks:
+    - app-network
     ###############################################
     # Comment the following out if you want to use the default reservation form
     volumes:
@@ -158,6 +168,9 @@ services:
       - ACAPY_ADMIN_URL_API_KEY=${ACAPY_ADMIN_API_KEY}
     ports:
       - ${TENANT_PROXY_PORT}:8080
+    networks:
+      - app-network
+   
     extra_hosts:
       - host.docker.internal:host-gateway
 
@@ -171,6 +184,9 @@ services:
     ports:
       - ${ACAPY_ENDORSER_ADMIN_PORT}:${ACAPY_ENDORSER_ADMIN_PORT}
       - ${ACAPY_ENDORSER_HTTP_PORT}:${ACAPY_ENDORSER_HTTP_PORT}
+    networks:
+      - app-network
+
     entrypoint: /bin/bash
     command: [
         "-c",
@@ -213,6 +229,9 @@ services:
       - POSTGRES_DB=${POSTGRESQL_DB}
     ports:
       - ${ENDORSER_POSTGRESQL_PORT}:5432
+    networks:
+      - app-network
+    
     volumes:
       - endorser-wallet:/var/lib/postgresql/data
     healthcheck:
@@ -231,6 +250,9 @@ services:
     ports:
       - ${ACAPY_ENDORSER_1_ADMIN_PORT}:${ACAPY_ENDORSER_1_ADMIN_PORT}
       - ${ACAPY_ENDORSER_1_HTTP_PORT}:${ACAPY_ENDORSER_1_HTTP_PORT}
+    networks:
+      - app-network
+ 
     entrypoint: /bin/bash
     command: [
         "-c",
@@ -273,6 +295,9 @@ services:
       - POSTGRES_DB=${POSTGRESQL_DB}
     ports:
       - ${ENDORSER_1_POSTGRESQL_PORT}:5432
+    networks:
+      - app-network
+   
     volumes:
       - endorser-wallet-1:/var/lib/postgresql/data
     healthcheck:
@@ -288,6 +313,9 @@ services:
     ports:
       - "1080:1080"
       - "1025:1025"
+    networks:
+      - app-network
+   
 
 
   ion-ledger-web-ui: 
