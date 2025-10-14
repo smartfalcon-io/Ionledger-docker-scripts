@@ -1,32 +1,18 @@
 #!/bin/bash
 
-# based on code developed by Sovrin:  https://github.com/hyperledger/aries-acapy-plugin-toolbox
+# ACA-Py startup script for EC2 environment
+# Using EC2 public IP or DNS instead of ngrok
 
-if [[ "${TRACTION_ENV}" == "local" ]]; then
-	echo "using ngrok end point [$NGROK_NAME]"
+# Set your EC2 public IP or DNS
+export EC2_PUBLIC_DNS="ec2-43-205-92-53.ap-south-1.compute.amazonaws.com"
+export EC2_PUBLIC_IP="43.205.92.53"
+# export ACAPY_ENDPOINT=http://43.205.92.53:8030
 
-	NGROK_ENDPOINT=null
-	while [ -z "$NGROK_ENDPOINT" ] || [ "$NGROK_ENDPOINT" = "null" ]
-	do
-	    echo "Fetching end point from ngrok service"
-	    NGROK_ENDPOINT=$(curl --silent $NGROK_NAME:4040/api/tunnels | ./jq -r '.tunnels[] | select(.proto=="https") | .public_url')
+# Use whichever you prefer
+export ACAPY_ENDPOINT="http://${EC2_PUBLIC_DNS}:${TRACTION_ACAPY_HTTP_PORT}"
 
-	    if [ -z "$NGROK_ENDPOINT" ] || [ "$NGROK_ENDPOINT" = "null" ]; then
-	        echo "ngrok not ready, sleeping 5 seconds...."
-	        sleep 5
-	    fi
-	done
-
-	export ACAPY_ENDPOINT=$NGROK_ENDPOINT
-fi
-
-echo "fetched end point [$ACAPY_ENDPOINT]"
-
+echo "Fetched endpoint: ${ACAPY_ENDPOINT}"
 echo "Starting aca-py agent ..."
-
-
-# ... if you want to echo the aca-py startup command ...
-# set -x
 
 exec aca-py start \
     --inbound-transport http "0.0.0.0" ${TRACTION_ACAPY_HTTP_PORT} \
@@ -41,4 +27,4 @@ exec aca-py start \
     --plugin basicmessage_storage.v1_0 \
     --plugin connection_update.v1_0 \
     --plugin multitenant_provider.v1_0 \
-    --plugin rpc.v1_0 \
+    --plugin rpc.v1_0
