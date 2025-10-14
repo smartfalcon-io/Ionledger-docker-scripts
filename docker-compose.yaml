@@ -16,7 +16,7 @@ services:
     build:
       context: ./services/plugins
       dockerfile: ./docker/Dockerfile
-    image: traction:plugins-acapy
+    image: ghcr.io/smartfalcon-io/traction-plugins-acapy:1.0
     entrypoint: "/bin/bash"
     tty: true
 
@@ -25,7 +25,7 @@ services:
     build:
       context: ./services/aca-py
       dockerfile: Dockerfile.acapy
-    image: traction:traction-agent
+    image: ghcr.io/smartfalcon-io/traction-agent:1.0
     depends_on:
       traction-acapy-image-builder:
         condition: service_started
@@ -98,7 +98,7 @@ services:
       - host.docker.internal:host-gateway
 
   traction-db:
-    image: "postgres:14.5"
+    image: ghcr.io/smartfalcon-io/postgres:14.5
     environment:
       - POSTGRES_USER=${POSTGRESQL_USER}
       - POSTGRES_PASSWORD=${POSTGRESQL_PASSWORD}
@@ -123,7 +123,7 @@ services:
     build:
       context: ./services/tenant-ui
       dockerfile: Dockerfile
-    image: traction:tenant-ui
+    image: ghcr.io/smartfalcon-io/tenant-ui:1.0
     depends_on:
       tenant-proxy:
         condition: service_started
@@ -156,7 +156,7 @@ services:
     build:
       context: ./services/plugins
       dockerfile: ./docker/Dockerfile.tenant-proxy
-    image: traction:tenant-proxy
+    image: ghcr.io/smartfalcon-io/tenant-proxy:1.0
     depends_on:
       traction-agent:
         condition: service_started
@@ -175,7 +175,7 @@ services:
 
 
   endorser-agent:
-    image: ghcr.io/hyperledger/aries-cloudagent-python:py3.9-0.12.1
+    image: ghcr.io/smartfalcon-io/ghcr.io/hyperledger/aries-cloudagent-python:py3.9-0.12.1
     depends_on:
       endorser-db:
         condition: service_healthy
@@ -220,7 +220,7 @@ services:
       - host.docker.internal:host-gateway
 
   endorser-db:
-    image: "postgres:14.5"
+    image: ghcr.io/smartfalcon-io/postgres:14.5
     environment:
       - POSTGRES_USER=${POSTGRESQL_USER}
       - POSTGRES_PASSWORD=${POSTGRESQL_PASSWORD}
@@ -241,7 +241,7 @@ services:
       - host.docker.internal:host-gateway
 
   endorser-agent-1:
-    image: ghcr.io/hyperledger/aries-cloudagent-python:py3.9-0.12.1
+    image: ghcr.io/smartfalcon-io/ghcr.io/hyperledger/aries-cloudagent-python:py3.9-0.12.1
     depends_on:
       endorser-db-1:
         condition: service_healthy
@@ -286,7 +286,7 @@ services:
       - host.docker.internal:host-gateway
 
   endorser-db-1:
-    image: "postgres:14.5"
+    image: ghcr.io/smartfalcon-io/postgres:14.5
     environment:
       - POSTGRES_USER=${POSTGRESQL_USER}
       - POSTGRES_PASSWORD=${POSTGRESQL_PASSWORD}
@@ -307,7 +307,7 @@ services:
       - host.docker.internal:host-gateway
 
   maildev:
-    image: maildev/maildev
+    image: ghcr.io/smartfalcon-io/maildev/maildev:latest
     ports:
       - "1080:1080"
       - "1025:1025"
@@ -317,7 +317,7 @@ services:
 
 
   ion-ledger-web-ui: 
-    image: udaykumargoli/ion-ledger-web-ui:latest
+    image: ghcr.io/smartfalcon-io/ionledger-web-ui-did-indy:latest
     restart: unless-stopped
     container_name: ion-ledger-web-ui
     ports:
@@ -329,7 +329,7 @@ services:
     - API_MOBILE_BASE=${REACT_APP_API_MOBILE_BASE}
 
   issuer-apis: 
-    image: udaykumargoli/batterypassport_issuer_apis-fastapi:latest
+    image: ghcr.io/smartfalcon-io/batterypassport_issuer_apis-fastapi:1.0
     restart: unless-stopped
     container_name: fastapi_appp
     ports:
@@ -375,7 +375,7 @@ services:
   #     - keycloak_network
 
   postgres:
-    image: postgres:15
+    image: ghcr.io/smartfalcon-io/postgres:15
     container_name: keycloak_postgress
     environment:
       POSTGRES_DB: keycloak
@@ -387,7 +387,7 @@ services:
       - keycloak_network
 
   keycloak:
-    image: quay.io/keycloak/keycloak:26.3.3
+    image: ghcr.io/smartfalcon-io/quay.io/keycloak/keycloak:26.3.3
     container_name: keycloak_serverr
     command: start-dev
     environment:
