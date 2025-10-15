@@ -34,8 +34,8 @@ services:
     environment:
       - TRACTION_ENV=${TRACTION_ENV}
       - NGROK_NAME=ngrok-traction-agent
-      - TRACTION_ACAPY_HTTP_PORT=${TRACTION_ACAPY_HTTP_PORT}
-      - TRACTION_ACAPY_ADMIN_PORT=${TRACTION_ACAPY_ADMIN_PORT}
+      - TRACTION_ACAPY_HTTP_PORT=${TRACTION_ACAPY_HTTP_PORT:-8030}
+      - TRACTION_ACAPY_ADMIN_PORT=${TRACTION_ACAPY_ADMIN_PORT:-8031}
       - TRACTION_ACAPY_WALLET_NAME=${TRACTION_ACAPY_WALLET_NAME}
       - TRACTION_ACAPY_WALLET_ENCRYPTION_KEY=${TRACTION_ACAPY_WALLET_ENCRYPTION_KEY}
       - TRACTION_ACAPY_WALLET_SCHEME=${TRACTION_ACAPY_WALLET_SCHEME}
@@ -85,8 +85,10 @@ services:
       - ACAPY_PLUGIN_CONFIG=${ACAPY_PLUGIN_CONFIG}
       - RUST_LOG=error
     ports:
-      - ${TRACTION_ACAPY_ADMIN_PORT}:${TRACTION_ACAPY_ADMIN_PORT}
-      - ${TRACTION_ACAPY_HTTP_PORT}:${TRACTION_ACAPY_HTTP_PORT}
+      - ${TRACTION_ACAPY_ADMIN_PORT}:${TRACTION_ACAPY_ADMIN_PORT:-8030}
+      - ${TRACTION_ACAPY_HTTP_PORT}:${TRACTION_ACAPY_HTTP_PORT:-8031}
+      - 8030:8030
+      - 8031:8031
     networks:
       - app-network
     entrypoint: /bin/bash
@@ -174,6 +176,40 @@ services:
 
 
 
+
+  endorser-api:
+    pull_policy: missing
+    build:
+      context: ./services/endorser
+      dockerfile: Dockerfile
+    image: ghcr.io/smartfalcon-io/endorser-api:latest
+    depends_on:
+      endorser-agent:
+        condition: service_started
+      endorser-db:
+        condition: service_healthy
+    environment:
+      - POSTGRESQL_HOST=${ENDORSER_POSTGRESQL_HOST}
+      - POSTGRESQL_PORT=${POSTGRESQL_PORT}
+      - POSTGRESQL_DB=${ENDORSER_PSQL_DB}
+      - ENDORSER_API_ADMIN_USER=${ENDORSER_API_ADMIN_USER}
+      - ENDORSER_API_ADMIN_KEY=${ENDORSER_API_ADMIN_KEY}
+      - ACAPY_ADMIN_URL=${ENDORSER_ACAPY_ADMIN_URL}
+      - ACAPY_ADMIN_URL_API_KEY=${ENDORSER_ACAPY_ADMIN_URL_API_KEY}
+      - ENVIRONMENT=production
+      - TRACTION_WEBHOOK_URL=${ENDORSER_WEBHOOK_URL}
+      - ACAPY_WEBHOOK_URL_API_KEY=${ENDORSER_ACAPY_WEBHOOK_URL_API_KEY}
+      - ENDORSER_API_PORT=${ENDORSER_API_PORT}
+    ports:
+      - ${ENDORSER_SERVICE_PORT}:${ENDORSER_API_PORT}
+    networks:
+      - app-network
+    volumes:
+      - ./services/endorser:/app:rw
+    extra_hosts:
+      - host.docker.internal:host-gateway
+
+
   endorser-agent:
     image: ghcr.io/smartfalcon-io/ghcr.io/hyperledger/aries-cloudagent-python:py3.9-0.12.1
     depends_on:
@@ -239,6 +275,41 @@ services:
       retries: 5
     extra_hosts:
       - host.docker.internal:host-gateway
+
+
+
+  endorser-api-1:
+    pull_policy: missing
+    build:
+      context: ./services/endorser
+      dockerfile: Dockerfile
+    image: ghcr.io/smartfalcon-io/endorser-api:latest
+    depends_on:
+      endorser-agent-1:
+        condition: service_started
+      endorser-db-1:
+        condition: service_healthy
+    networks:
+      - app-network
+    environment:
+      - POSTGRESQL_HOST=${ENDORSER_1_POSTGRESQL_HOST}
+      - POSTGRESQL_PORT=${POSTGRESQL_PORT}
+      - POSTGRESQL_DB=${ENDORSER_PSQL_DB}
+      - ENDORSER_API_ADMIN_USER=${ENDORSER_API_ADMIN_USER}
+      - ENDORSER_API_ADMIN_KEY=${ENDORSER_API_ADMIN_KEY}
+      - ACAPY_ADMIN_URL=${ENDORSER_1_ACAPY_ADMIN_URL}
+      - ACAPY_ADMIN_URL_API_KEY=${ENDORSER_ACAPY_ADMIN_URL_API_KEY}
+      - ENVIRONMENT=production
+      - TRACTION_WEBHOOK_URL=${ENDORSER_1_WEBHOOK_URL}
+      - ACAPY_WEBHOOK_URL_API_KEY=${ENDORSER_ACAPY_WEBHOOK_URL_API_KEY}
+      - ENDORSER_API_PORT=${ENDORSER_API_1_PORT}
+    ports:
+      - ${ENDORSER_1_SERVICE_PORT}:${ENDORSER_API_1_PORT}
+    volumes:
+      - ./services/endorser:/app:rw
+    extra_hosts:
+      - host.docker.internal:host-gateway
+
 
   endorser-agent-1:
     image: ghcr.io/smartfalcon-io/ghcr.io/hyperledger/aries-cloudagent-python:py3.9-0.12.1

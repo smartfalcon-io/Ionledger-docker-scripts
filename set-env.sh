@@ -4,8 +4,6 @@ export TRACTION_ENV=ec2
 export EC2_PUBLIC_DNS=ec2-43-205-92-53.ap-south-1.compute.amazonaws.com
 export EC2_PUBLIC_IP=43.205.92.53
 
-# Use whichever you prefer
-export ACAPY_ENDPOINT="http://${EC2_PUBLIC_DNS}:${TRACTION_ACAPY_HTTP_PORT}"
 
 
 # Traction Agent Configuration
@@ -20,7 +18,8 @@ export TRACTION_MULTITENANCY_CONFIGURATION_WALLET_TYPE=askar-profile
 export TRACTION_MULTITENANCY_CONFIGURATION_WALLET_NAME=askar-wallet
 
 # Aca-Py Startup Configuration
-export ACAPY_ENDPOINT=http://localhost:8030
+export ACAPY_ENDPOINT=http://traction-agent:8030
+
 export ACAPY_AUTO_PROVISION=true
 export ACAPY_WALLET_TYPE=askar
 export ACAPY_WALLET_STORAGE_TYPE=postgres_storage

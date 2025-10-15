@@ -11,6 +11,8 @@ services:
       - 3001:3001
       - 3000:3000
       - 3002:3002
+      - 8030:8030
+      - 8031:8031
     volumes:
       - ./configs:/home/aries/configs:ro,z
     extra_hosts:
@@ -19,6 +21,9 @@ services:
       /bin/bash -c 'aca-py "$$@"' --
     command: >
       start --arg-file configs/default.yml
+    networks:
+      - app-network
+
 
   traction-db:
     image: "postgres:12"
@@ -33,6 +38,9 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - app-network
+
 
   tenant-proxy:
     build:
@@ -46,6 +54,11 @@ services:
       - 8032:8080
     extra_hosts:
       - host.docker.internal:host-gateway
+    networks:
+      - app-network
+networks:
+  app-network:
+    driver: bridge
 
 volumes:
   traction-wallet:
