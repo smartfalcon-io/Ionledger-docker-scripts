@@ -1,3 +1,4 @@
+version: "3.9"
 services:
   # ngrok-traction-agent:
   #   image: ngrok/ngrok
@@ -6,9 +7,6 @@ services:
   #     - TRACTION_ACAPY_HTTP_PORT=${TRACTION_ACAPY_HTTP_PORT}
   #   ports:
   #     - 4052:4040
-  #   networks:
-  #     - app-network
- 
   #   command: http traction-agent:${TRACTION_ACAPY_HTTP_PORT} --log stdout
 
   traction-acapy-image-builder:
@@ -34,8 +32,8 @@ services:
     environment:
       - TRACTION_ENV=${TRACTION_ENV}
       - NGROK_NAME=ngrok-traction-agent
-      - TRACTION_ACAPY_HTTP_PORT=${TRACTION_ACAPY_HTTP_PORT:-8030}
-      - TRACTION_ACAPY_ADMIN_PORT=${TRACTION_ACAPY_ADMIN_PORT:-8031}
+      - TRACTION_ACAPY_HTTP_PORT=${TRACTION_ACAPY_HTTP_PORT}
+      - TRACTION_ACAPY_ADMIN_PORT=${TRACTION_ACAPY_ADMIN_PORT}
       - TRACTION_ACAPY_WALLET_NAME=${TRACTION_ACAPY_WALLET_NAME}
       - TRACTION_ACAPY_WALLET_ENCRYPTION_KEY=${TRACTION_ACAPY_WALLET_ENCRYPTION_KEY}
       - TRACTION_ACAPY_WALLET_SCHEME=${TRACTION_ACAPY_WALLET_SCHEME}
@@ -85,12 +83,8 @@ services:
       - ACAPY_PLUGIN_CONFIG=${ACAPY_PLUGIN_CONFIG}
       - RUST_LOG=error
     ports:
-      - ${TRACTION_ACAPY_ADMIN_PORT}:${TRACTION_ACAPY_ADMIN_PORT:-8030}
-      - ${TRACTION_ACAPY_HTTP_PORT}:${TRACTION_ACAPY_HTTP_PORT:-8031}
-      - 8030:8030
-      - 8031:8031
-    networks:
-      - app-network
+      - ${TRACTION_ACAPY_ADMIN_PORT}:${TRACTION_ACAPY_ADMIN_PORT}
+      - ${TRACTION_ACAPY_HTTP_PORT}:${TRACTION_ACAPY_HTTP_PORT}
     entrypoint: /bin/bash
     command: ["-c", "sleep 5; ./ngrok-wait.sh"]
     volumes:
@@ -100,16 +94,13 @@ services:
       - host.docker.internal:host-gateway
 
   traction-db:
-    image: ghcr.io/smartfalcon-io/postgres:14.5
+    image: "ghcr.io/smartfalcon-io/postgres:14.5"
     environment:
       - POSTGRES_USER=${POSTGRESQL_USER}
       - POSTGRES_PASSWORD=${POSTGRESQL_PASSWORD}
       - POSTGRES_DB=${POSTGRESQL_DB}
     ports:
       - ${POSTGRESQL_PORT}:5432
-    networks:
-      - app-network
-     
     volumes:
       - traction-wallet:/var/lib/postgresql/data
     healthcheck:
@@ -145,11 +136,11 @@ services:
       - SERVER_SMTP_PORT=1025
     ports:
       - ${TENANT_UI_PORT}:8080
-    networks:
-    - app-network
+    ###############################################
     # Comment the following out if you want to use the default reservation form
     volumes:
-      - ../services/tenant-ui/config/forms:/usr/src/app/frontend/dist/forms
+      - ./services/tenant-ui/config/forms:/usr/src/app/frontend/dist/forms
+    ###############################################
     extra_hosts:
       - host.docker.internal:host-gateway
 
@@ -168,14 +159,8 @@ services:
       - ACAPY_ADMIN_URL_API_KEY=${ACAPY_ADMIN_API_KEY}
     ports:
       - ${TENANT_PROXY_PORT}:8080
-    networks:
-      - app-network
-   
     extra_hosts:
       - host.docker.internal:host-gateway
-
-
-
 
   endorser-api:
     pull_policy: missing
@@ -202,13 +187,10 @@ services:
       - ENDORSER_API_PORT=${ENDORSER_API_PORT}
     ports:
       - ${ENDORSER_SERVICE_PORT}:${ENDORSER_API_PORT}
-    networks:
-      - app-network
     volumes:
       - ./services/endorser:/app:rw
     extra_hosts:
       - host.docker.internal:host-gateway
-
 
   endorser-agent:
     image: ghcr.io/smartfalcon-io/ghcr.io/hyperledger/aries-cloudagent-python:py3.9-0.12.1
@@ -218,9 +200,6 @@ services:
     ports:
       - ${ACAPY_ENDORSER_ADMIN_PORT}:${ACAPY_ENDORSER_ADMIN_PORT}
       - ${ACAPY_ENDORSER_HTTP_PORT}:${ACAPY_ENDORSER_HTTP_PORT}
-    networks:
-      - app-network
-
     entrypoint: /bin/bash
     command: [
         "-c",
@@ -256,16 +235,13 @@ services:
       - host.docker.internal:host-gateway
 
   endorser-db:
-    image: ghcr.io/smartfalcon-io/postgres:14.5
+    image: "ghcr.io/smartfalcon-io/postgres:14.5"
     environment:
       - POSTGRES_USER=${POSTGRESQL_USER}
       - POSTGRES_PASSWORD=${POSTGRESQL_PASSWORD}
       - POSTGRES_DB=${POSTGRESQL_DB}
     ports:
       - ${ENDORSER_POSTGRESQL_PORT}:5432
-    networks:
-      - app-network
-    
     volumes:
       - endorser-wallet:/var/lib/postgresql/data
     healthcheck:
@@ -275,8 +251,6 @@ services:
       retries: 5
     extra_hosts:
       - host.docker.internal:host-gateway
-
-
 
   endorser-api-1:
     pull_policy: missing
@@ -289,8 +263,6 @@ services:
         condition: service_started
       endorser-db-1:
         condition: service_healthy
-    networks:
-      - app-network
     environment:
       - POSTGRESQL_HOST=${ENDORSER_1_POSTGRESQL_HOST}
       - POSTGRESQL_PORT=${POSTGRESQL_PORT}
@@ -310,7 +282,6 @@ services:
     extra_hosts:
       - host.docker.internal:host-gateway
 
-
   endorser-agent-1:
     image: ghcr.io/smartfalcon-io/ghcr.io/hyperledger/aries-cloudagent-python:py3.9-0.12.1
     depends_on:
@@ -319,9 +290,6 @@ services:
     ports:
       - ${ACAPY_ENDORSER_1_ADMIN_PORT}:${ACAPY_ENDORSER_1_ADMIN_PORT}
       - ${ACAPY_ENDORSER_1_HTTP_PORT}:${ACAPY_ENDORSER_1_HTTP_PORT}
-    networks:
-      - app-network
- 
     entrypoint: /bin/bash
     command: [
         "-c",
@@ -357,16 +325,13 @@ services:
       - host.docker.internal:host-gateway
 
   endorser-db-1:
-    image: ghcr.io/smartfalcon-io/postgres:14.5
+    image: "ghcr.io/smartfalcon-io/postgres:14.5"
     environment:
       - POSTGRES_USER=${POSTGRESQL_USER}
       - POSTGRES_PASSWORD=${POSTGRESQL_PASSWORD}
       - POSTGRES_DB=${POSTGRESQL_DB}
     ports:
       - ${ENDORSER_1_POSTGRESQL_PORT}:5432
-    networks:
-      - app-network
-   
     volumes:
       - endorser-wallet-1:/var/lib/postgresql/data
     healthcheck:
@@ -382,10 +347,6 @@ services:
     ports:
       - "1080:1080"
       - "1025:1025"
-    networks:
-      - app-network
-   
-
 
   ion-ledger-web-ui: 
     image: ghcr.io/smartfalcon-io/ionledger-web-ui-did-indy:latest
@@ -393,8 +354,6 @@ services:
     container_name: ion-ledger-web-ui
     ports:
       - "3000:80"
-    networks:
-      - app-network
     environment:
     - API_BASE=${REACT_APP_API_BASE}
     - API_MOBILE_BASE=${REACT_APP_API_MOBILE_BASE}
@@ -429,34 +388,6 @@ services:
       - SCHEMA_VERSION=${SCHEMA_VERSION}
       - CRED_DEF_ID=${CRED_DEF_ID}
 
-  # fastapi:
-  #   build: .
-  #   container_name: fastapi_app
-  #   command: uvicorn main:app --host 0.0.0.0 --port 8087 --reload
-  #   ports:
-  #     - "8087:8087"
-  #   volumes:
-  #     - .:/app  
-  #   depends_on:
-  #     - keycloak
-  #   environment:
-  #     - TOKEN_URL=http://keycloak:8080/realms/master/protocol/openid-connect/token
-  #   restart: always
-  #   networks:                
-  #     - keycloak_network
-
-  postgres:
-    image: ghcr.io/smartfalcon-io/postgres:15
-    container_name: keycloak_postgress
-    environment:
-      POSTGRES_DB: keycloak
-      POSTGRES_USER: keycloak
-      POSTGRES_PASSWORD: keycloak
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    networks:
-      - keycloak_network
-
   keycloak:
     image: ghcr.io/smartfalcon-io/quay.io/keycloak/keycloak:26.3.3
     container_name: keycloak_serverr
@@ -478,14 +409,25 @@ services:
     volumes:
       - keycloak_data:/opt/keycloak/data
 
+  postgres:
+    image: ghcr.io/smartfalcon-io/postgres:15
+    container_name: keycloak_postgress
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: keycloak
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - keycloak_network
 
 
 volumes:
   traction-wallet:
   endorser-wallet:
   endorser-wallet-1:
-  postgres_data:
   keycloak_data:
+  postgres_data:
 
 
 networks:
