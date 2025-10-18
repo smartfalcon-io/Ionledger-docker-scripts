@@ -1,8 +1,8 @@
 # Traction Environment
 export TRACTION_ENV=ec2
 # export NGROK_AUTHTOKEN=32HNWLkhWnYbLLwMWsdW80dfEIy_7G9V6JugpwSHe2yv6wYQo
-export EC2_PUBLIC_DNS=ec2-43-205-92-53.ap-south-1.compute.amazonaws.com
-export EC2_PUBLIC_IP=43.205.92.53
+export EC2_PUBLIC_DNS=ec2-13-235-58-136.ap-south-1.compute.amazonaws.com
+export EC2_PUBLIC_IP=13.235.58.136
 
 
 
@@ -73,7 +73,7 @@ export ACAPY_ENDORSER_SEED=YjieiZiyoHaMza3sxzmgBYjBQ7L1er62
 export ACAPY_ENDORSER_SEED_1=00000000000000000000000000000008
 export ACAPY_ENDORSER_PUBLIC_DID=SVfHGCEEvEFmpBPcxgNqRR
 export ACAPY_ENDORSER_1_PUBLIC_DID=FBmi5JLf5g58kDnNXMy4QM
-export ENDORSER_SERVICE_HOST=ec2-43-205-92-53.ap-south-1.compute.amazonaws.com
+export ENDORSER_SERVICE_HOST=ec2-13-235-58-136.ap-south-1.compute.amazonaws.com
 export ENDORSER_SERVICE_PORT=5300
 export ENDORSER_1_SERVICE_PORT=5301
 export ENDORSER_API_PORT=5000
@@ -116,8 +116,8 @@ export ENDORSER_API_ADMIN_KEY=change-me
 export SERVER_SMTP_SERVER=maildev
 export SERVER_SMTP_PORT=1025
 export TENANT_UI_PORT=5101
-export SERVER_TRACTION_URL=http://ec2-43-205-92-53.ap-south-1.compute.amazonaws.com:8032
-export FRONTEND_TENANT_PROXY_URL=http://ec2-43-205-92-53.ap-south-1.compute.amazonaws.com:8032
+export SERVER_TRACTION_URL=http://ec2-13-235-58-136.ap-south-1.compute.amazonaws.com:8032
+export FRONTEND_TENANT_PROXY_URL=http://ec2-13-235-58-136.ap-south-1.compute.amazonaws.com:8032
 export IMAGE_TAG=scripts_tenant-ui:latest
 export IMAGE_VERSION=latest
 export UX_APP_TITLE=Traction Tenant Console

@@ -25,7 +25,7 @@ class GlobalConfig(BaseSettings):
 
     # the following defaults match up with default values in scripts/.env.example
     # these MUST be all set in non-local environments.
-    PSQL_HOST: str = os.environ.get("ENDORSER_POSTGRESQL_HOST", "ec2-43-205-92-53.ap-south-1.compute.amazonaws.com")
+    PSQL_HOST: str = os.environ.get("ENDORSER_POSTGRESQL_HOST", "ec2-13-235-58-136.ap-south-1.compute.amazonaws.com")
     PSQL_PORT: int = os.environ.get("ENDORSER_POSTGRESQL_PORT", 5432)
     PSQL_DB: str = os.environ.get("ENDORSER_POSTGRESQL_DB", "traction")
 
