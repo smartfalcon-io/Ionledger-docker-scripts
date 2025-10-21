@@ -1,0 +1,60 @@
+# ===============================
+# Environment files
+# ===============================
+.env
+set-env.sh
+
+# ===============================
+# Docker
+# ===============================
+docker-compose.override.yaml
+**/Dockerfile.*
+**/docker-compose.override.yml
+**/docker-compose.override.yaml
+**/build/
+**/tmp/
+
+# ===============================
+# NGINX
+# ===============================
+nginx/certs/
+nginx/letsencrypt/accounts/
+nginx/letsencrypt/archive/
+nginx/letsencrypt/live/
+nginx/logs/
+nginx/www/
+
+# ===============================
+# Node/Frontend build
+# ===============================
+**/dist/
+**/build/
+**/node_modules/
+
+# ===============================
+# Python
+# ===============================
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+
+# ===============================
+# IDEs and OS
+# ===============================
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# ===============================
+# Temporary / Misc
+# ===============================
+*.log
+*.tmp
+*.bak
+

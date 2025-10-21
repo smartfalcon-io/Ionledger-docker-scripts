@@ -7,8 +7,8 @@
 set -e  # Exit immediately on error
 
 # --- EC2 configuration ---
-export EC2_PUBLIC_DNS="ec2-13-235-58-136.ap-south-1.compute.amazonaws.com"
-export EC2_PUBLIC_IP="13.235.58.136"
+export EC2_PUBLIC_DNS="ec2-13-201-181-118.ap-south-1.compute.amazonaws.com"
+export EC2_PUBLIC_IP="13.201.181.118"
 
 # --- Determine ACA-Py endpoint ---
 if [[ "${TRACTION_ENV}" == "ec2" ]]; then
