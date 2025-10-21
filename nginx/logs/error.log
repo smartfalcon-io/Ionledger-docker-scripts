@@ -1871,3 +1871,27 @@
 2025/10/21 16:10:56 [notice] 1#1: start worker process 22
 2025/10/21 16:13:53 [error] 21#21: *2 open() "/etc/nginx/html/config" failed (2: No such file or directory), client: 115.98.81.253, server: ionledger.duckdns.org, request: "GET /config HTTP/1.1", host: "ionledger.duckdns.org", referrer: "https://ionledger.duckdns.org/tenant-ui/"
 2025/10/21 16:18:21 [error] 22#22: *7 open() "/etc/nginx/html/developmentserver/metadatauploader" failed (2: No such file or directory), client: 20.172.70.65, server: ionledger.duckdns.org, request: "GET /developmentserver/metadatauploader HTTP/1.1", host: "13.201.181.118"
+2025/10/21 16:38:37 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2025/10/21 16:38:37 [notice] 21#21: gracefully shutting down
+2025/10/21 16:38:37 [notice] 22#22: gracefully shutting down
+2025/10/21 16:38:37 [notice] 22#22: exiting
+2025/10/21 16:38:37 [notice] 21#21: exiting
+2025/10/21 16:38:37 [notice] 21#21: exit
+2025/10/21 16:38:37 [notice] 22#22: exit
+2025/10/21 16:38:37 [notice] 1#1: signal 17 (SIGCHLD) received from 22
+2025/10/21 16:38:37 [notice] 1#1: worker process 22 exited with code 0
+2025/10/21 16:38:37 [notice] 1#1: signal 29 (SIGIO) received
+2025/10/21 16:38:37 [notice] 1#1: signal 17 (SIGCHLD) received from 21
+2025/10/21 16:38:37 [notice] 1#1: worker process 21 exited with code 0
+2025/10/21 16:38:37 [notice] 1#1: exit
+2025/10/21 16:48:23 [notice] 1#1: using the "epoll" event method
+2025/10/21 16:48:23 [notice] 1#1: nginx/1.27.5
+2025/10/21 16:48:23 [notice] 1#1: built by gcc 14.2.0 (Alpine 14.2.0) 
+2025/10/21 16:48:23 [notice] 1#1: OS: Linux 6.14.0-1014-aws
+2025/10/21 16:48:23 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+2025/10/21 16:48:23 [notice] 1#1: start worker processes
+2025/10/21 16:48:23 [notice] 1#1: start worker process 21
+2025/10/21 16:48:23 [notice] 1#1: start worker process 22
+2025/10/21 16:49:35 [error] 21#21: *4 open() "/etc/nginx/html/config" failed (2: No such file or directory), client: 115.98.81.253, server: ionledger.duckdns.org, request: "GET /config HTTP/1.1", host: "ionledger.duckdns.org", referrer: "https://ionledger.duckdns.org/tenant-ui/"
+2025/10/21 16:49:54 [error] 22#22: *3 open() "/etc/nginx/html/config" failed (2: No such file or directory), client: 115.98.81.253, server: ionledger.duckdns.org, request: "GET /config HTTP/1.1", host: "ionledger.duckdns.org", referrer: "https://ionledger.duckdns.org/tenant-ui/"
+2025/10/21 16:51:06 [error] 21#21: *13 open() "/etc/nginx/html/robots.txt" failed (2: No such file or directory), client: 138.36.155.253, server: ionledger.duckdns.org, request: "GET /robots.txt HTTP/1.0", host: "0.0.0.0"
