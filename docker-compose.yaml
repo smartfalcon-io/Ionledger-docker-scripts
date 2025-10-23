@@ -9,6 +9,8 @@ services:
     image: ghcr.io/smartfalcon-io/traction-plugins-acapy:1.0
     entrypoint: "/bin/bash"
     tty: true
+    networks:
+      - app-network
 
   traction-agent:
     pull_policy: if_not_present
@@ -86,6 +88,9 @@ services:
       - "./ledgers.yml:/home/aries/ledgers.yml"
     extra_hosts:
       - host.docker.internal:host-gateway
+    networks:
+      - app-network
+
 
 
   traction-db:
@@ -96,6 +101,8 @@ services:
       - POSTGRES_DB=${POSTGRESQL_DB}
     ports:
       - ${POSTGRESQL_PORT}:5432
+    networks:
+      - app-network    
     volumes:
       - traction-wallet:/var/lib/postgresql/data
     healthcheck:
@@ -158,6 +165,8 @@ services:
       - ${TENANT_PROXY_PORT}:8080
     extra_hosts:
       - host.docker.internal:host-gateway
+    networks:
+      - app-network
 
   
   maildev:
@@ -165,6 +174,9 @@ services:
     ports:
       - "1080:1080"
       - "1025:1025"
+    networks:
+      - app-network
+      
 
   ion-ledger-web-ui: 
     image: ghcr.io/smartfalcon-io/ionledger-web-ui-did-indy:latest
@@ -225,6 +237,7 @@ services:
     depends_on:
       - postgres
     networks:
+      - app-network
       - keycloak_network
     volumes:
       - keycloak_data:/opt/keycloak/data
@@ -239,6 +252,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
+      - app-network
       - keycloak_network
 
 

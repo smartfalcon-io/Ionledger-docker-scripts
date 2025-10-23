@@ -26,6 +26,10 @@ services:
       - 8032:8080
     extra_hosts:
       - host.docker.internal:host-gateway
+    networks:
+      - app-network
+networks:
+  app-network:
 
 volumes:
   traction-wallet:
