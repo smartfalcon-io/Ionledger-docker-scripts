@@ -39,7 +39,8 @@
         "messageLevel": "info",
         "showMessage": false
       }
-    }
+    },
+    "matomoUrl": ""
   },
   "image": {
     "buildtime": "",
