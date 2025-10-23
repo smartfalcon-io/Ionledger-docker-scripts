@@ -443,7 +443,6 @@ services:
       - issuer-apis
       - tenant-ui
     networks:
-      - ionledger-docker-scripts_app-network
       - app-network
       - keycloak_network
 
