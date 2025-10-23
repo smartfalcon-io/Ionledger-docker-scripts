@@ -427,16 +427,20 @@ services:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - keycloak_network
-      
+
+
+
   nginx:
-    image: 'jc21/nginx-proxy-manager:latest'
+    image: nginx:1.27-alpine
+    container_name: nginx-reverse-proxy
     restart: unless-stopped
     ports:
-      - '80:80'
-      - '443:443'
+      - "80:80"
+      - "443:443"
     volumes:
-      - ./data:/data
-      - ./letsencrypt:/etc/letsencrypt
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./nginx/certs:/etc/letsencrypt
+      - ./nginx/logs:/var/log/nginx
     depends_on:
       - ion-ledger-web-ui
       - issuer-apis
@@ -444,6 +448,22 @@ services:
     networks:
       - app-network
       - keycloak_network
+  # nginx:
+  #   image: 'jc21/nginx-proxy-manager:latest'
+  #   restart: unless-stopped
+  #   ports:
+  #     - '80:80'
+  #     - '443:443'
+  #   volumes:
+  #     - ./data:/data
+  #     - ./letsencrypt:/etc/letsencrypt
+  #   depends_on:
+  #     - ion-ledger-web-ui
+  #     - issuer-apis
+  #     - tenant-ui
+  #   networks:
+  #     - app-network
+  #     - keycloak_network
 
   # certbot:
   #   image: certbot/certbot
