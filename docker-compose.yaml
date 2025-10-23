@@ -433,12 +433,10 @@ services:
     restart: unless-stopped
     ports:
       - '80:80'
-      - '81:81'
       - '443:443'
     volumes:
       - ./data:/data
       - ./letsencrypt:/etc/letsencrypt
-      - ./nginx-html:/usr/share/nginx/html  
     depends_on:
       - ion-ledger-web-ui
       - issuer-apis
