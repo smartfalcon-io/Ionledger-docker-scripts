@@ -142,7 +142,7 @@ services:
     # Comment the following out if you want to use the default reservation form
     volumes:
       - ./services/tenant-ui/dist:/usr/share/nginx/tenant-ui
-      - ./services/tenant-ui/config/config.json:/usr/src/app/frontend/dist/config/config.json
+      - ./services/tenant-ui/config/config.json:/usr/share/nginx/tenant-ui/config/config.json
       - ./services/tenant-ui/config/forms:/usr/src/app/frontend/dist/forms
     ###############################################
     extra_hosts:
