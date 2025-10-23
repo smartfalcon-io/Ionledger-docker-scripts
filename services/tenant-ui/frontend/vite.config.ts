@@ -3,12 +3,16 @@ import vue from '@vitejs/plugin-vue';
 import path from 'path';
 import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite';
 
+// So that when we run this FE in dev mode separately (not served by the node api)
+// it'll call the api properly for config and backend calls (consider make env var for API)
+// https://vitejs.dev/config/server-options.html#server-proxy
 const proxyObject = {
   target: 'http://localhost:8080',
   ws: true,
   changeOrigin: true,
 };
 
+// https://vitetest.dev/config/
 export default defineConfig({
   plugins: [
     vue(),
@@ -39,20 +43,5 @@ export default defineConfig({
     globals: true,
     setupFiles: ['/test/setupGlobalMocks.ts', '/test/setupApi.ts'],
     environment: 'jsdom',
-  },
-
-  // 🔹 Add this build config
-  base: '/tenant-ui/',
-  build: {
-    outDir: 'dist',       // ensures the output goes to dist/
-    emptyOutDir: true,    // cleans dist before building
-    rollupOptions: {
-      input: path.resolve(__dirname, 'src/index.html'), // main entry file
-      output: {
-        assetFileNames: 'assets/[name]-[hash][extname]',
-        chunkFileNames: 'assets/[name]-[hash].js',
-        entryFileNames: 'assets/[name]-[hash].js',
-      },
-    },
   },
 });

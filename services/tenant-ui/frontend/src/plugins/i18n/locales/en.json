@@ -240,14 +240,14 @@
   "dashboard": {
     "backToDashboard": "Back to Dashboard",
     "dashboard": "Dashboard",
-    "greeting": "Powered by IonLedger"
+    "greeting": "Powered by SmartFalcon"
   },
   "holder": {
     "holder": "Holder"
   },
   "home": {
     "dashboard": "Dashboard",
-    "greeting": "Powered by IonLedger",
+    "greeting": "Powered by SmartFalcon",
     "login": {
       "id": "Wallet ID",
       "secret": "Wallet Key",
