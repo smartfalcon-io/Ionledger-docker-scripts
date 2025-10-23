@@ -437,7 +437,8 @@ services:
       - '443:443'
     volumes:
       - ./data:/data
-      - ./letsencrypt:/etc/letsencrypt     
+      - ./letsencrypt:/etc/letsencrypt
+      - ./favicon.ico:/usr/share/nginx/html/favicon.ico     
     depends_on:
       - ion-ledger-web-ui
       - issuer-apis
