@@ -141,6 +141,7 @@ services:
     ###############################################
     # Comment the following out if you want to use the default reservation form
     volumes:
+      - ./services/tenant-ui/config:/usr/src/app/frontend/dist/config
       - ./services/tenant-ui/config/forms:/usr/src/app/frontend/dist/forms
     ###############################################
     extra_hosts:
