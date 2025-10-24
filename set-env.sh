@@ -1,8 +1,8 @@
 # Traction Environment
 export TRACTION_ENV=ec2
 # export NGROK_AUTHTOKEN=32HNWLkhWnYbLLwMWsdW80dfEIy_7G9V6JugpwSHe2yv6wYQo
-export EC2_PUBLIC_DNS=ec2-13-201-181-118.ap-south-1.compute.amazonaws.com
-export EC2_PUBLIC_IP=13.201.181.118
+export EC2_PUBLIC_DNS=ec2-13-126-137-120.ap-south-1.compute.amazonaws.com
+export EC2_PUBLIC_IP=13.126.137.120
 
 
 
@@ -73,7 +73,7 @@ export ACAPY_ENDORSER_SEED=YjieiZiyoHaMza3sxzmgBYjBQ7L1er62
 export ACAPY_ENDORSER_SEED_1=00000000000000000000000000000008
 export ACAPY_ENDORSER_PUBLIC_DID=SVfHGCEEvEFmpBPcxgNqRR
 export ACAPY_ENDORSER_1_PUBLIC_DID=FBmi5JLf5g58kDnNXMy4QM
-export ENDORSER_SERVICE_HOST=ec2-13-201-181-118.ap-south-1.compute.amazonaws.com
+export ENDORSER_SERVICE_HOST=ec2-13-126-137-120.ap-south-1.compute.amazonaws.com
 export ENDORSER_SERVICE_PORT=5300
 export ENDORSER_1_SERVICE_PORT=5301
 export ENDORSER_API_PORT=5000
@@ -116,10 +116,10 @@ export ENDORSER_API_ADMIN_KEY=change-me
 export SERVER_SMTP_SERVER=maildev
 export SERVER_SMTP_PORT=1025
 export TENANT_UI_PORT=5101
-# export SERVER_TRACTION_URL=http://ec2-13-201-181-118.ap-south-1.compute.amazonaws.com
-# export FRONTEND_TENANT_PROXY_URL=http://ec2-13-201-181-118.ap-south-1.compute.amazonaws.com
-export SERVER_TRACTION_URL=http://bpass-ionledger.duckdns.org
-export FRONTEND_TENANT_PROXY_URL=http://bpass-ionledger.duckdns.org
+export SERVER_TRACTION_URL=http://ec2-13-126-137-120.ap-south-1.compute.amazonaws.com:8032
+export FRONTEND_TENANT_PROXY_URL=http://ec2-13-126-137-120.ap-south-1.compute.amazonaws.com:8032
+# export SERVER_TRACTION_URL=http://bpass-ionledger.duckdns.org
+# export FRONTEND_TENANT_PROXY_URL=http://bpass-ionledger.duckdns.org
 # export SERVER_TRACTION_URL=http://traction-agent:8030
 # export FRONTEND_TENANT_PROXY_URL=http://tenant-proxy:8080
 
