@@ -292,4 +292,3 @@ networks:
 
   keycloak_network:
     driver: bridge
-    external: true
