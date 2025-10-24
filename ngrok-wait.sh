@@ -1,16 +1,6 @@
-#!/bin/bash
-
-# ACA-Py startup script for EC2 environment
-# Using EC2 public IP or DNS instead of ngrok
-# Based on original Sovrin toolbox startup logic
-
 set -e  # Exit immediately on error
 
-# --- EC2 configuration ---
-# export EC2_PUBLIC_DNS="ec2-13-126-137-120.ap-south-1.compute.amazonaws.com"
-# export EC2_PUBLIC_IP="13.126.137.120"
 
-# --- Determine ACA-Py endpoint ---
 if [[ "${TRACTION_ENV}" == "ec2" ]]; then
     echo "Using EC2 endpoint configuration..."
 
