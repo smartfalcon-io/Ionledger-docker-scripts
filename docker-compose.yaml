@@ -288,7 +288,6 @@ volumes:
 networks:
   app-network:
     driver: bridge
-    external: true
 
   keycloak_network:
     driver: bridge
