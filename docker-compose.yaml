@@ -269,7 +269,7 @@ services:
       - ./nginx/certs:/etc/letsencrypt
       - ./nginx/logs:/var/log/nginx
       # - ./nginx/www:/usr/share/nginx/html 
-      - ./services/tenant-ui/dist:/usr/share/nginx/tenant-ui
+      - ./services/tenant-ui/frontend/dist:/usr/share/nginx/tenant-ui
     depends_on:
       - ion-ledger-web-ui
       - issuer-apis
