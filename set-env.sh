@@ -118,8 +118,8 @@ export SERVER_SMTP_PORT=1025
 export TENANT_UI_PORT=5101
 # export SERVER_TRACTION_URL=http://ec2-13-201-181-118.ap-south-1.compute.amazonaws.com
 # export FRONTEND_TENANT_PROXY_URL=http://ec2-13-201-181-118.ap-south-1.compute.amazonaws.com
-# export SERVER_TRACTION_URL=http://bpass-ionledger.duckdns.org/tenant-api
-# export FRONTEND_TENANT_PROXY_URL=http://bpass-ionledger.duckdns.org/tenant-api
+export SERVER_TRACTION_URL=http://bpass-ionledger.duckdns.org
+export FRONTEND_TENANT_PROXY_URL=http://bpass-ionledger.duckdns.org
 export SERVER_TRACTION_URL=http://traction-agent:8030
 export FRONTEND_TENANT_PROXY_URL=http://tenant-proxy:8080
 
