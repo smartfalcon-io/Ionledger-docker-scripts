@@ -198,7 +198,6 @@ services:
       - "8087:8087"
     networks: 
       - app-network
-      - keycloak_network
     environment:
       - BASE_URL=${BASE_URL}
       - ISSUE_TENANT_ID=${ISSUE_TENANT_ID}
@@ -238,7 +237,6 @@ services:
       - postgres
     networks:
       - app-network
-      - keycloak_network
     volumes:
       - keycloak_data:/opt/keycloak/data
 
@@ -253,7 +251,6 @@ services:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - app-network
-      - keycloak_network
 
 
 
@@ -274,7 +271,6 @@ services:
       - tenant-ui
     networks:
       - app-network
-      - keycloak_network
  
 
 volumes:
@@ -289,6 +285,3 @@ networks:
   app-network:
     external: true
     name: app-network
-
-  keycloak_network:
-    driver: bridge
