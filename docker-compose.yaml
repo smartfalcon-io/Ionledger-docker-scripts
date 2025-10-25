@@ -280,9 +280,3 @@ volumes:
   keycloak_data:
   postgres_data:
 
-
-networks:
-  app-network:
-    driver: bridge
-    # external: true
-    # name: app-network
