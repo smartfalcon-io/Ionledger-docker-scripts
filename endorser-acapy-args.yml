@@ -10,10 +10,10 @@ outbound-transport: http
 log-level: info
 endorser-protocol-role: endorser
 requests-through-public-did: true
-endorser-public-did: /tenant/endorser-connection
-#endorser-alias: <for author>
+# endorser-public-did: /tenant/endorser-connection   # ❌ remove
+# endorser-alias: <for author>
 auto-request-endorsement: true
-auto-approve-endorsement: true
+# auto-approve-endorsement: true                     # ❌ remove
 auto-endorse-transactions: true
-#auto-write-transactions: <for author>
-#auto-create-revocation-transactions: <for author>
+# auto-write-transactions: <for author>
+# auto-create-revocation-transactions: <for author>
