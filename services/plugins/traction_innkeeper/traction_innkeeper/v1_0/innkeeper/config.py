@@ -69,7 +69,7 @@ class ReservationConfig(BaseModel):
 
     @classmethod
     def default(cls):
-        return cls(expiry_minutes=60, auto_approve=False, auto_issuer=False)
+        return cls(expiry_minutes=60, auto_approve=True, auto_issuer=False)
 
 
 class TractionInnkeeperConfig(BaseModel):
