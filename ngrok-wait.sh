@@ -35,13 +35,4 @@ exec aca-py start \
     --plugin connection_update.v1_0 \
     --plugin multitenant_provider.v1_0 \
     --plugin rpc.v1_0 \
-    --endorser-role endorser \
-    --endorser-auto \
-    --endorser-auto-approve \
-    --auto-provision \
-    --label "bcovrin-test-endorser" \
-    --admin-api-key "${ACAPY_ADMIN_API_KEY}" \
-    --multitenant \
-    --multitenant-admin \
-    --multitenant-admin-api-key "${ACAPY_ADMIN_API_KEY}"
-
+    
