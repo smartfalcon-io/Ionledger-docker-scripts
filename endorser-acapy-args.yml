@@ -6,13 +6,17 @@ auto-provision: true
 monitor-ping: true
 public-invites: true
 outbound-transport: http
-plugin: 'aries_cloudagent.messaging.jsonld'
+plugin: aries_cloudagent.messaging.jsonld
 log-level: info
 
-endorser-protocol-role: author
-endorser-alias: endorser
-endorser-public-did: /tenant/endorser-connection
+# Endorser configuration
+endorser-role: endorser
+auto-endorse-transactions: true
+endorser-endorse-with-did: SVfHGCEEvEFmpBPcxgNqRR
 
-auto-request-endorsement: true
-auto-write-transactions: true
+# Optional but recommended
+auto-create-rev-reg: true
 auto-promote-author-did: true
+preserve-exchange-records: true
+emit-new-didcomm-prefix: true
+emit-new-didcomm-mime-type: true
