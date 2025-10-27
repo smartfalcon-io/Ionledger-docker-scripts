@@ -20,7 +20,6 @@ echo "Fetched endpoint: [$ACAPY_ENDPOINT]"
 echo "Starting ACA-Py agent..."
 echo "-------------------------------------------------------"
 
-# --- Start ACA-Py ---
 exec aca-py start \
     --inbound-transport http "0.0.0.0" ${TRACTION_ACAPY_HTTP_PORT} \
     --outbound-transport http \
@@ -35,13 +34,14 @@ exec aca-py start \
     --plugin connection_update.v1_0 \
     --plugin multitenant_provider.v1_0 \
     --plugin rpc.v1_0 \
-    --endorser-role endorser \
-    --endorser-auto \
-    --endorser-auto-approve \
+    --endorser-protocol-role endorser \
+    --auto-request-endorsement \
+    --auto-endorse-transactions \
+    --auto-write-transactions \
+    --auto-create-revocation-transactions \
     --auto-provision \
     --label "bcovrin-test-endorser" \
     --admin-api-key "${ACAPY_ADMIN_API_KEY}" \
     --multitenant \
     --multitenant-admin \
     --multitenant-admin-api-key "${ACAPY_ADMIN_API_KEY}"
-
