@@ -19,6 +19,8 @@ services:
       /bin/bash -c 'aca-py "$$@"' --
     command: >
       start --arg-file configs/default.yml
+    networks:
+      - app-network  
 
   traction-db:
     image: "postgres:12"
@@ -33,6 +35,8 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - app-network
 
   tenant-proxy:
     build:
@@ -46,6 +50,8 @@ services:
       - 8032:8080
     extra_hosts:
       - host.docker.internal:host-gateway
+    networks:
+      - app-network
 
 volumes:
   traction-wallet:
