@@ -10,7 +10,7 @@ outbound-transport: http
 log-level: info
 
 # --- Endorser configuration ---
-endorser-role: endorser
+endorser-protocol-role: endorser
 endorser-public-did: true
 auto-request-endorsement: true
 auto-endorse-transactions: true
