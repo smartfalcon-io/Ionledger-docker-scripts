@@ -241,11 +241,11 @@ async def tenant_wallet_update(request: web.BaseRequest):
         settings["image_url"] = image_url
     if "ACAPY_ENDORSER_ROLE" in extra_settings:
         if extra_settings.get("ACAPY_ENDORSER_ROLE") == "author":
-            settings["endorser.endorser"] = False
+            settings["endorser.endorser"] = True
         elif extra_settings.get("ACAPY_ENDORSER_ROLE") == "endorser":
-            settings["endorser.author"] = False
-            settings["endorser.auto_request"] = False
-            settings["endorser.auto_write"] = False
+            settings["endorser.author"] = True
+            settings["endorser.auto_request"] = True
+            settings["endorser.auto_write"] = True
         elif extra_settings.get("ACAPY_ENDORSER_ROLE") == "none":
             settings["endorser.author"] = False
             settings["endorser.endorser"] = False
