@@ -10,12 +10,10 @@
 # log-level: info
 
 # # Endorser configuration
-# endorser-role: endorser
 # auto-endorse-transactions: true
 # endorser-endorse-with-did: SVfHGCEEvEFmpBPcxgNqRR
 
 # # Optional but recommended
-# auto-create-rev-reg: true
 # auto-promote-author-did: true
 # preserve-exchange-records: true
 # emit-new-didcomm-prefix: true
