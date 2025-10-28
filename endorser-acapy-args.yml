@@ -1,3 +1,26 @@
+# auto-accept-invites: true
+# auto-accept-requests: true
+# auto-respond-messages: true
+# auto-ping-connection: true
+# auto-provision: true
+# monitor-ping: true
+# public-invites: true
+# outbound-transport: http
+# plugin: aries_cloudagent.messaging.jsonld
+# log-level: info
+
+# # Endorser configuration
+# endorser-role: endorser
+# auto-endorse-transactions: true
+# endorser-endorse-with-did: SVfHGCEEvEFmpBPcxgNqRR
+
+# # Optional but recommended
+# auto-create-rev-reg: true
+# auto-promote-author-did: true
+# preserve-exchange-records: true
+# emit-new-didcomm-prefix: true
+# emit-new-didcomm-mime-type: true
+
 auto-accept-invites: true
 auto-accept-requests: true
 auto-respond-messages: true
@@ -5,18 +28,14 @@ auto-ping-connection: true
 auto-provision: true
 monitor-ping: true
 public-invites: true
+plugin: 'aries_cloudagent.messaging.jsonld'
 outbound-transport: http
-plugin: aries_cloudagent.messaging.jsonld
 log-level: info
-
-# Endorser configuration
-endorser-role: endorser
+endorser-protocol-role: endorser
+requests-through-public-did: true
+#endorser-public-did: <for author>
+#endorser-alias: <for author>
+#auto-request-endorsement: <for author>
 auto-endorse-transactions: true
-endorser-endorse-with-did: SVfHGCEEvEFmpBPcxgNqRR
-
-# Optional but recommended
-auto-create-rev-reg: true
-auto-promote-author-did: true
-preserve-exchange-records: true
-emit-new-didcomm-prefix: true
-emit-new-didcomm-mime-type: true
+#auto-write-transactions: <for author>
+#auto-create-revocation-transactions: <for author>
