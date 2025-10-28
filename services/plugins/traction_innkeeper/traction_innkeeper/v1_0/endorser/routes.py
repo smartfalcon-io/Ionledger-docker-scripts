@@ -150,16 +150,16 @@ async def endorser_info_get(request: web.BaseRequest):
     return web.json_response(info)
 
 
-async def register(app: web.Application):
-    """Register routes."""
-    LOGGER.info("> registering routes")
-    app.add_routes(
-        [
-            web.post("/tenant/endorser-connection", endorser_connection_set),
-            web.get(
-                "/tenant/endorser-connection", endorser_connection_get, allow_head=False
-            ),
-            web.get("/tenant/endorser-info", endorser_info_get, allow_head=False),
-        ]
-    )
-    LOGGER.info("< registering routes")
+# async def register(app: web.Application):
+#     """Register routes."""
+#     LOGGER.info("> registering routes")
+#     app.add_routes(
+#         [
+#             web.post("/tenant/endorser-connection", endorser_connection_set),
+#             web.get(
+#                 "/tenant/endorser-connection", endorser_connection_get, allow_head=False
+#             ),
+#             web.get("/tenant/endorser-info", endorser_info_get, allow_head=False),
+#         ]
+#     )
+#     LOGGER.info("< registering routes")
