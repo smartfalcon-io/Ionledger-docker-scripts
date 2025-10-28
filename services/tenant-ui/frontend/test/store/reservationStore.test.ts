@@ -59,7 +59,7 @@ describe('reservationStore', () => {
       const response = await store.makeReservation({
         contact_email: 'test@email.com',
         tenant_name: 'Test',
-        auto_approve: false,
+        auto_approve: true,
       });
       await flushPromises();
 

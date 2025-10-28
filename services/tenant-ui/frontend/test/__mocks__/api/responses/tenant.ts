@@ -40,7 +40,7 @@ const endorserInfo = {
 };
 
 const endorserConnection = {
-  accept: 'manual',
+  accept: 'auto',
   their_public_did: 'SVfHGCEEvEFmpBPcxgNqRR',
   state: 'active',
   my_did: 'MgnVXbyiF5J44pwj7S9fLr',
@@ -68,7 +68,7 @@ const publicDid = {
 };
 
 const connectToEndorser = {
-  accept: 'manual',
+  accept: 'auto',
   their_public_did: 'SVfHGCEEvEFmpBPcxgNqRR',
   state: 'request',
   my_did: 'MgnVXbyiF5J44pwj7S9fLr',

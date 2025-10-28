@@ -2438,3 +2438,6 @@
 2025/10/28 09:55:25 [emerg] 1#1: host not found in upstream "endorser-api" in /etc/nginx/conf.d/default.conf:85
 2025/10/28 09:56:25 [emerg] 1#1: host not found in upstream "endorser-api" in /etc/nginx/conf.d/default.conf:85
 2025/10/28 09:57:26 [emerg] 1#1: host not found in upstream "endorser-api" in /etc/nginx/conf.d/default.conf:85
+2025/10/28 09:58:26 [emerg] 1#1: host not found in upstream "endorser-api" in /etc/nginx/conf.d/default.conf:85
+2025/10/28 09:59:26 [emerg] 1#1: host not found in upstream "endorser-api" in /etc/nginx/conf.d/default.conf:85
+2025/10/28 10:00:27 [emerg] 1#1: host not found in upstream "endorser-api" in /etc/nginx/conf.d/default.conf:85
