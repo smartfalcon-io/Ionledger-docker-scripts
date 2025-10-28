@@ -90,7 +90,7 @@ const receiveInvitation = {
 const getConnection = {
   invitation_mode: 'once',
   their_did: 'CvcxvRBZLccBNF16DrPQC6',
-  accept: 'auto',
+  accept: 'manual',
   their_role: 'inviter',
   my_did: 'X3N8xPdizduz1ArZZpKxmg',
   connection_protocol: 'didexchange/1.0',
