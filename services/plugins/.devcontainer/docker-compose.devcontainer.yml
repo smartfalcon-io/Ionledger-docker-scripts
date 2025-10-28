@@ -22,7 +22,7 @@ services:
       dockerfile: ./docker/Dockerfile.tenant-proxy
     restart: unless-stopped
     environment:
-      - ACAPY_ADMIN_URL=http://host.docker.internal:3001
+      - ACAPY_ADMIN_URL=http://traction-agent:3001
       - ACAPY_ADMIN_URL_API_KEY=change-me
     ports:
       - 8032:8080
