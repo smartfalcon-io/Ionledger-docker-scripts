@@ -276,36 +276,37 @@ services:
       - app-network
 
   certbot:
-    image: certbot/certbot
+    image: certbot/certbot:latest
     container_name: certbot
+    command: >
+      certonly --webroot
+      --webroot-path=/var/www/certbot
+      --email snehakolimi31012003@gmail.com
+      --agree-tos
+      --no-eff-email
+      -d bpass-ionledger.duckdns.org
+      -d endorser-bpass.duckdns.org
     volumes:
       - ./nginx/certs:/etc/letsencrypt
-      - ./certbot/conf:/var/www/certbot
-    command: certonly --webroot -w /var/www/certbot \
-             -d bpass-ionledger.duckdns.org \
-             -d endorser-bpass.duckdns.org \
-             --email snehakolimi31012003@gmail.com \
-             --agree-tos --no-eff-email --noninteractive
-    networks:
-      - app-network
+      - ./nginx/www:/var/www/certbot
     depends_on:
       - nginx
+    restart: "no"
+    networks:
+      - app-network    
 
   certbot-renew:
-    image: certbot/certbot
+    image: certbot/certbot:latest
     container_name: certbot-renew
-    restart: unless-stopped
+    command: >
+      renew --webroot --webroot-path=/var/www/certbot
     volumes:
       - ./nginx/certs:/etc/letsencrypt
-      - ./certbot/conf:/var/www/certbot
-    entrypoint: >
-      sh -c "trap exit TERM;
-             while :; do
-               certbot renew --webroot -w /var/www/certbot --quiet;
-               sleep 12h & wait $${!};
-             done"
+      - ./nginx/www:/var/www/certbot
+    restart: unless-stopped
+
     networks:
-      - app-network
+      - app-network    
 
 volumes:
   traction-wallet:
