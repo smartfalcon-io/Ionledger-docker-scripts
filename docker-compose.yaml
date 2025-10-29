@@ -267,9 +267,6 @@ services:
       - ion-ledger-web-ui
       - issuer-apis
       - tenant-ui
-      - endorser-agent
-      - endorser-agent-1
-      - keycloak
     networks:
       - app-network
 
