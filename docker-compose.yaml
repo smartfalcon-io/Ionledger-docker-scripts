@@ -234,6 +234,7 @@ services:
       # 👇 Add these 3 lines
       KC_HOSTNAME: bpass-ionledger.duckdns.org
       KC_HOSTNAME_PATH: /admin
+      KC_HTTP_RELATIVE_PATH: /admin
       KC_PROXY: edge
     ports:
       - "8080:8080"
