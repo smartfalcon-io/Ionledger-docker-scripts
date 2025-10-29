@@ -257,8 +257,8 @@ services:
       - app-network
 
   nginx:
-    container_name: nginx
     image: nginx:1.27-alpine
+    container_name: nginx
     restart: unless-stopped
     ports:
       - "80:80"
@@ -266,11 +266,44 @@ services:
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
       - ./nginx/certs:/etc/letsencrypt
+      - ./certbot/conf:/var/www/certbot
       - ./nginx/logs:/var/log/nginx
     depends_on:
       - ion-ledger-web-ui
       - issuer-apis
       - tenant-ui
+    networks:
+      - app-network
+
+  certbot:
+    image: certbot/certbot
+    container_name: certbot
+    volumes:
+      - ./nginx/certs:/etc/letsencrypt
+      - ./certbot/conf:/var/www/certbot
+    command: certonly --webroot -w /var/www/certbot \
+             -d bpass-ionledger.duckdns.org \
+             -d endorser-bpass.duckdns.org \
+             --email snehakolimi31012003@gmail.com \
+             --agree-tos --no-eff-email --noninteractive
+    networks:
+      - app-network
+    depends_on:
+      - nginx
+
+  certbot-renew:
+    image: certbot/certbot
+    container_name: certbot-renew
+    restart: unless-stopped
+    volumes:
+      - ./nginx/certs:/etc/letsencrypt
+      - ./certbot/conf:/var/www/certbot
+    entrypoint: >
+      sh -c "trap exit TERM;
+             while :; do
+               certbot renew --webroot -w /var/www/certbot --quiet;
+               sleep 12h & wait $${!};
+             done"
     networks:
       - app-network
 
