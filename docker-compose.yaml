@@ -256,21 +256,6 @@ services:
     networks:
       - app-network
 
-  # ------------------------------
-  # Nginx + Certbot for HTTPS
-  # ------------------------------
-  certbot:
-    image: certbot/certbot
-    container_name: certbot
-    volumes:
-      - ./nginx/certs:/etc/letsencrypt
-      - ./nginx/www:/var/www/certbot
-    command: certonly --webroot --webroot-path=/var/www/certbot \
-      -d bpass-ionledger.duckdns.org -d endorser-bpass.duckdns.org \
-      --email snehakolimi31012003@gmail.com --agree-tos --no-eff-email
-    networks:
-      - app-network
-
   nginx:
     image: nginx:1.27-alpine
     container_name: nginx
@@ -278,16 +263,32 @@ services:
     ports:
       - "80:80"
       - "443:443"
-    depends_on:
-      - certbot
-      - tenant-ui
-      - ion-ledger-web-ui
-      - issuer-apis
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
       - ./nginx/certs:/etc/letsencrypt
       - ./nginx/www:/var/www/certbot
       - ./nginx/logs:/var/log/nginx
+    depends_on:
+      - tenant-ui
+      - ion-ledger-web-ui
+      - issuer-apis
+    networks:
+      - app-network
+
+  certbot:
+    image: certbot/certbot
+    container_name: certbot
+    volumes:
+      - ./nginx/certs:/etc/letsencrypt
+      - ./nginx/www:/var/www/certbot
+    entrypoint: >
+      certbot certonly --webroot
+      --webroot-path=/var/www/certbot
+      -d bpass-ionledger.duckdns.org
+      -d endorser-bpass.duckdns.org
+      --email snehakolimi31012003@gmail.com
+      --agree-tos
+      --no-eff-email
     networks:
       - app-network
 
@@ -299,7 +300,7 @@ services:
       - ./nginx/www:/var/www/certbot
     entrypoint: sh -c "while :; do certbot renew --quiet; sleep 12h; done"
     networks:
-      - app-network
+      - app-network    
 
 volumes:
   traction-wallet:
