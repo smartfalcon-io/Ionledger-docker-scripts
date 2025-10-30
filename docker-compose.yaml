@@ -272,6 +272,7 @@ services:
       - tenant-ui
       - ion-ledger-web-ui
       - issuer-apis
+      - certbot
     networks:
       - app-network
 
