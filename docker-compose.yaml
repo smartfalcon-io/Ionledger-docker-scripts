@@ -233,7 +233,7 @@ services:
       KC_DB_PASSWORD: keycloak
       
       # ✅ Correct configuration for Keycloak 26+
-      KC_HOSTNAME_URL: http://bpass-ionledger.duckdns.org/admin
+      KC_HOSTNAME_URL: http://bpass.ionledger.co.in/admin
       KC_HTTP_RELATIVE_PATH: /admin
       KC_PROXY_HEADERS: xforwarded
       KC_PROXY: edge
@@ -284,8 +284,8 @@ services:
     entrypoint: >
       certbot certonly --webroot
       --webroot-path=/var/www/certbot
-      -d bpass-ionledger.duckdns.org
-      -d endorser-bpass.duckdns.org
+      -d bpass.ionledger.co.in
+      -d endorser.ionledger.co.in
       --email snehakolimi31012003@gmail.com
       --agree-tos
       --no-eff-email
