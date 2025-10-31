@@ -1,7 +1,7 @@
 # Traction Environment
 export TRACTION_ENV=ec2
 # export NGROK_AUTHTOKEN=32HNWLkhWnYbLLwMWsdW80dfEIy_7G9V6JugpwSHe2yv6wYQo
-export EC2_PUBLIC_DNS=ec2-13-126-137-120.ap-south-1.compute.amazonaws.com
+export EC2_PUBLIC_DNS=https://bpass.ionledger.co.in
 export EC2_PUBLIC_IP=13.126.137.120
 
 
