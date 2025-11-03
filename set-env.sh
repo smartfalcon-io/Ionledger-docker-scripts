@@ -1,7 +1,7 @@
 # Traction Environment
 export TRACTION_ENV=ec2
 # export NGROK_AUTHTOKEN=32HNWLkhWnYbLLwMWsdW80dfEIy_7G9V6JugpwSHe2yv6wYQo
-export EC2_PUBLIC_DNS=bpass.ionledger.co.in/tenant-api
+export EC2_PUBLIC_DNS=ec2-13-126-137-120.ap-south-1.compute.amazonaws.com
 export EC2_PUBLIC_IP=13.126.137.120
 
 
@@ -18,7 +18,7 @@ export TRACTION_MULTITENANCY_CONFIGURATION_WALLET_TYPE=askar-profile
 export TRACTION_MULTITENANCY_CONFIGURATION_WALLET_NAME=askar-wallet
 
 # Aca-Py Startup Configuration
-export ACAPY_ENDPOINT=http://traction-agent:8030
+export ACAPY_ENDPOINT=https://bpass.ionledger.co.in/tenant-api
 export ACAPY_ENDORSER_ROLE=endorser
 export ACAPY_AUTO_ENDORSE_TRANSACTIONS=true
 export ACAPY_ENDORSER_ALIAS=bcovrin-test-endorser
