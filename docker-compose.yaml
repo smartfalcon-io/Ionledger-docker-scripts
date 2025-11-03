@@ -272,6 +272,7 @@ services:
       - tenant-ui
       - ion-ledger-web-ui
       - issuer-apis
+      - tenant-proxy
     networks:
       - app-network
 
