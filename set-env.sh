@@ -18,7 +18,7 @@ export TRACTION_MULTITENANCY_CONFIGURATION_WALLET_TYPE=askar-profile
 export TRACTION_MULTITENANCY_CONFIGURATION_WALLET_NAME=askar-wallet
 
 # Aca-Py Startup Configuration
-export ACAPY_ENDPOINT=http://traction-agent:8030
+export ACAPY_ENDPOINT=https://bpass.ionledger.co.in/tenant-api
 export ACAPY_ENDORSER_ROLE=endorser
 export ACAPY_AUTO_ENDORSE_TRANSACTIONS=true
 export ACAPY_ENDORSER_ALIAS=bcovrin-test-endorser
