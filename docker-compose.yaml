@@ -273,7 +273,6 @@ services:
       - ion-ledger-web-ui
       - issuer-apis
       - tenant-proxy
-      - endorser-agent-1
     networks:
       - app-network
 
