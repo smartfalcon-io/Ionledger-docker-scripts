@@ -1,23 +1,29 @@
-#!/bin/bash
-set -e
+
+
+set -e  
+
+# export EC2_PUBLIC_DNS="ec2-13-126-137-120.ap-south-1.compute.amazonaws.com"
+# export EC2_PUBLIC_IP="13.126.137.120"
 
 if [[ "${TRACTION_ENV}" == "ec2" ]]; then
     echo "Using EC2 endpoint configuration..."
+
     EC2_ENDPOINT="https://${EC2_PUBLIC_DNS}"
 
-    # Wait until endpoint is reachable
-    until curl --silent --head $EC2_ENDPOINT | grep "200" >/dev/null; do
-        echo "Waiting for ACAPY endpoint to be ready..."
+    # Mimic ngrok wait loop (optional, ensures endpoint variable is initialized)
+    while [ -z "$EC2_ENDPOINT" ] || [ "$EC2_ENDPOINT" = "null" ]; do
+        echo "EC2 endpoint not ready, sleeping 5 seconds..."
         sleep 5
     done
 
-    export ACAPY_ENDPOINT=$EC2_ENDPOINT
+    export ACAPY_ENDPOINT="$EC2_ENDPOINT"
 fi
 
 echo "-------------------------------------------------------"
-echo "Fetched endpoint: [$ACAPY_ENDPOINT]"
+echo "Fetched endpoint: ${ACAPY_ENDPOINT}"
 echo "Starting ACA-Py agent..."
 echo "-------------------------------------------------------"
+
 
 exec aca-py start \
     --auto-provision \
