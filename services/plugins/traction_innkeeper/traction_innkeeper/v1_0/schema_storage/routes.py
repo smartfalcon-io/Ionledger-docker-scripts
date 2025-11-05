@@ -3,12 +3,13 @@ import logging
 
 from aiohttp import web
 from aiohttp_apispec import docs, response_schema, match_info_schema, request_schema
-from aries_cloudagent.admin.request_context import AdminRequestContext
+from acapy_agent.admin.request_context import AdminRequestContext
 
-from aries_cloudagent.messaging.models.base import BaseModelError
-from aries_cloudagent.messaging.models.openapi import OpenAPISchema
+from acapy_agent.messaging.models.base import BaseModelError
+from acapy_agent.messaging.models.openapi import OpenAPISchema
+from acapy_agent.admin.decorators.auth import tenant_authentication
 
-from aries_cloudagent.storage.error import StorageNotFoundError, StorageError
+from acapy_agent.storage.error import StorageNotFoundError, StorageError
 from marshmallow import fields
 
 from .models import SchemaStorageRecordSchema
@@ -41,16 +42,18 @@ class SchemaStorageListSchema(OpenAPISchema):
 
     results = fields.List(
         fields.Nested(SchemaStorageRecordSchema()),
-        description="List of schema storage records",
+        metadata={
+            "description": "List of schema storage records",
+        },
     )
 
 
 class SchemaIdMatchInfoSchema(OpenAPISchema):
-    schema_id = fields.Str(description="Schema identifier", required=True)
+    schema_id = fields.Str(metadata={"description": "Schema identifier"}, required=True)
 
 
 class SchemaStorageAddSchema(OpenAPISchema):
-    schema_id = fields.Str(description="Schema identifier", required=True)
+    schema_id = fields.Str(metadata={"description": "Schema identifier"}, required=True)
 
 
 class SchemaStorageOperationResponseSchema(OpenAPISchema):
@@ -58,7 +61,9 @@ class SchemaStorageOperationResponseSchema(OpenAPISchema):
 
     success = fields.Bool(
         required=True,
-        description="True if operation successful, false if otherwise",
+        metadata={
+            "description": "True if operation successful, false if otherwise",
+        },
     )
 
 
@@ -67,6 +72,7 @@ class SchemaStorageOperationResponseSchema(OpenAPISchema):
 )
 @response_schema(SchemaStorageListSchema(), 200, description="")
 @error_handler
+@tenant_authentication
 async def schema_storage_list(request: web.BaseRequest):
     context: AdminRequestContext = request["context"]
     profile = context.profile
@@ -86,6 +92,7 @@ async def schema_storage_list(request: web.BaseRequest):
 @request_schema(SchemaStorageAddSchema())
 @response_schema(SchemaStorageRecordSchema(), 200, description="")
 @error_handler
+@tenant_authentication
 async def schema_storage_add(request: web.BaseRequest):
     context: AdminRequestContext = request["context"]
     profile = context.profile
@@ -103,6 +110,7 @@ async def schema_storage_add(request: web.BaseRequest):
 @match_info_schema(SchemaIdMatchInfoSchema())
 @response_schema(SchemaStorageRecordSchema(), 200, description="")
 @error_handler
+@tenant_authentication
 async def schema_storage_get(request: web.BaseRequest):
     context: AdminRequestContext = request["context"]
     profile = context.profile
@@ -120,6 +128,7 @@ async def schema_storage_get(request: web.BaseRequest):
 @match_info_schema(SchemaIdMatchInfoSchema())
 @response_schema(SchemaStorageOperationResponseSchema(), 200, description="")
 @error_handler
+@tenant_authentication
 async def schema_storage_remove(request: web.BaseRequest):
     context: AdminRequestContext = request["context"]
     profile = context.profile
@@ -136,6 +145,7 @@ async def schema_storage_remove(request: web.BaseRequest):
 )
 @response_schema(SchemaStorageListSchema(), 200, description="")
 @error_handler
+@tenant_authentication
 async def schema_storage_sync_created(request: web.BaseRequest):
     context: AdminRequestContext = request["context"]
     profile = context.profile

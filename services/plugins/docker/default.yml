@@ -16,10 +16,12 @@ endpoint:
 # plugins
 plugin:
   - basicmessage_storage.v1_0
+  - connections
   - connection_update.v1_0
   - multitenant_provider.v1_0
   - traction_plugins.traction_innkeeper.v1_0
   - rpc.v1_0
+  - webvh
 
  
 plugin-config-value:
@@ -46,9 +48,9 @@ jwt-secret: insecure-jwt-secret
 multitenant-admin: true
 
 # Wallet
-# wallet-name: default
+wallet-name: default
 wallet-type: askar
-# wallet-key: "insecure, for use in demo only"
+wallet-key: "insecure, for use in demo only"
 
 log-level: info
 

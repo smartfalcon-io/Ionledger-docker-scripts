@@ -1,11 +1,9 @@
 import logging
 
 from aiohttp import web
-from aries_cloudagent.utils.classloader import ClassLoader
-
+from acapy_agent.utils.classloader import ClassLoader
 
 from . import MODULES
-
 
 LOGGER = logging.getLogger(__name__)
 
@@ -14,8 +12,10 @@ def load_routes(module_name):
     LOGGER.info(f"> load_routes({module_name})")
     try:
         routes = ClassLoader.load_module("routes", module_name)
-    except Exception:
+    except Exception as err:
+        LOGGER.warning(f"Error loading routes for {module_name}: {err}")
         routes = None
+        
     LOGGER.info(f"< load_routes({module_name}): {routes}")
     return routes
 

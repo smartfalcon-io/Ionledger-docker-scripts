@@ -3,12 +3,14 @@ import logging
 
 from aiohttp import web
 from aiohttp_apispec import docs, response_schema, match_info_schema
-from aries_cloudagent.admin.request_context import AdminRequestContext
+from acapy_agent.admin.request_context import AdminRequestContext
 
-from aries_cloudagent.messaging.models.base import BaseModelError
-from aries_cloudagent.messaging.models.openapi import OpenAPISchema
+from acapy_agent.messaging.models.base import BaseModelError
+from acapy_agent.messaging.models.openapi import OpenAPISchema
 
-from aries_cloudagent.storage.error import StorageNotFoundError, StorageError
+from acapy_agent.storage.error import StorageNotFoundError, StorageError
+from acapy_agent.admin.decorators.auth import tenant_authentication
+
 from marshmallow import fields
 
 from .models import CredDefStorageRecordSchema
@@ -41,13 +43,18 @@ class CredDefStorageListSchema(OpenAPISchema):
 
     results = fields.List(
         fields.Nested(CredDefStorageRecordSchema()),
-        description="List of cred def storage records",
+        metadata={
+            "description": "List of cred def storage records",
+        },
     )
 
 
 class CredDefIdMatchInfoSchema(OpenAPISchema):
     cred_def_id = fields.Str(
-        description="Credential Definition identifier", required=True
+        metadata={
+            "description": "Credential Definition identifier",
+        },
+        required=True,
     )
 
 
@@ -56,7 +63,9 @@ class CredDefStorageOperationResponseSchema(OpenAPISchema):
 
     success = fields.Bool(
         required=True,
-        description="True if operation successful, false if otherwise",
+        metadata={
+            "description": "True if operation successful, false if otherwise",
+        },
     )
 
 
@@ -65,6 +74,7 @@ class CredDefStorageOperationResponseSchema(OpenAPISchema):
 )
 @response_schema(CredDefStorageListSchema(), 200, description="")
 @error_handler
+@tenant_authentication
 async def creddef_storage_list(request: web.BaseRequest):
     context: AdminRequestContext = request["context"]
     profile = context.profile
@@ -84,6 +94,7 @@ async def creddef_storage_list(request: web.BaseRequest):
 @match_info_schema(CredDefIdMatchInfoSchema())
 @response_schema(CredDefStorageRecordSchema(), 200, description="")
 @error_handler
+@tenant_authentication
 async def creddef_storage_get(request: web.BaseRequest):
     context: AdminRequestContext = request["context"]
     profile = context.profile
@@ -101,6 +112,7 @@ async def creddef_storage_get(request: web.BaseRequest):
 @match_info_schema(CredDefIdMatchInfoSchema())
 @response_schema(CredDefStorageOperationResponseSchema(), 200, description="")
 @error_handler
+@tenant_authentication
 async def creddef_storage_remove(request: web.BaseRequest):
     context: AdminRequestContext = request["context"]
     profile = context.profile

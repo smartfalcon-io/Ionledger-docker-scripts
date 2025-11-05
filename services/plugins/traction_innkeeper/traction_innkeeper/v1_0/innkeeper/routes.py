@@ -2,7 +2,7 @@ import functools
 import logging
 import uuid
 
-from aiohttp import ClientSession, web
+from aiohttp import web
 from aiohttp_apispec import (
     docs,
     match_info_schema,
@@ -10,41 +10,42 @@ from aiohttp_apispec import (
     response_schema,
     use_kwargs,
 )
-from aries_cloudagent.admin.request_context import AdminRequestContext
-from aries_cloudagent.admin.server import AdminConfigSchema
-from aries_cloudagent.messaging.models.base import BaseModelError
-from aries_cloudagent.messaging.models.openapi import OpenAPISchema
-from aries_cloudagent.messaging.valid import JSONWebToken, UUIDFour
-from aries_cloudagent.multitenant.admin.routes import (
+from acapy_agent.admin.request_context import AdminRequestContext
+from acapy_agent.admin.routes import AdminConfigSchema
+from acapy_agent.messaging.models.base import BaseModelError
+from acapy_agent.messaging.models.openapi import OpenAPISchema
+from acapy_agent.messaging.valid import UUIDFour
+from acapy_agent.multitenant.admin.routes import (
     CreateWalletTokenRequestSchema,
     CreateWalletTokenResponseSchema,
 )
-from aries_cloudagent.multitenant.base import BaseMultitenantManager
-from aries_cloudagent.multitenant.error import WalletKeyMissingError
-from aries_cloudagent.storage.error import StorageError, StorageNotFoundError
-from aries_cloudagent.version import __version__
-from aries_cloudagent.wallet.error import WalletSettingsError
-from aries_cloudagent.wallet.models.wallet_record import WalletRecord
+from acapy_agent.multitenant.base import BaseMultitenantManager
+from acapy_agent.multitenant.error import WalletKeyMissingError
+from acapy_agent.storage.error import StorageError, StorageNotFoundError
+from acapy_agent.version import __version__
+from acapy_agent.wallet.error import WalletSettingsError
+from acapy_agent.wallet.models.wallet_record import WalletRecord
+from multitenant_provider.v1_0.routes import plugin_wallet_create_token
 from marshmallow import fields, validate
 
 from . import TenantManager
 from .config import InnkeeperWalletConfig
+from .models import (
+    ReservationRecord,
+    ReservationRecordSchema,
+    TenantAuthenticationApiRecord,
+    TenantAuthenticationApiRecordSchema,
+    TenantRecord,
+    TenantRecordSchema,
+)
 from .utils import (
-    approve_reservation,
-    refresh_registration_token,
-    create_api_key,
     EndorserLedgerConfigSchema,
     ReservationException,
     TenantApiKeyException,
     TenantConfigSchema,
-)
-from .models import (
-    ReservationRecord,
-    ReservationRecordSchema,
-    TenantRecord,
-    TenantRecordSchema,
-    TenantAuthenticationApiRecord,
-    TenantAuthenticationApiRecordSchema,
+    approve_reservation,
+    create_api_key,
+    refresh_registration_token,
 )
 
 LOGGER = logging.getLogger(__name__)
@@ -54,7 +55,7 @@ SWAGGER_CATEGORY = "traction-innkeeper"
 def innkeeper_only(func):
     @functools.wraps(func)
     async def wrapper(request):
-        print("> innkeeper_only")
+        LOGGER.info("> innkeeper_only")
         context: AdminRequestContext = request["context"]
         profile = context.profile
         wallet_name = str(profile.settings.get("wallet.name"))
@@ -66,7 +67,7 @@ def innkeeper_only(func):
                 ret = await func(request)
                 return ret
             finally:
-                print("< innkeeper_only")
+                LOGGER.info("< innkeeper_only")
         else:
             LOGGER.error(
                 f"API call is for innkeepers only. wallet.name = '{wallet_name}', wallet.innkeeper = {wallet_innkeeper}"
@@ -106,9 +107,11 @@ class CustomCreateWalletTokenRequestSchema(CreateWalletTokenRequestSchema):
     """Request schema for creating a wallet token."""
 
     api_key = fields.Str(
-        description="API key for this wallet",
+        metadata={
+            "description": "API key for this wallet",
+            "example": "3bd14a1e8fb645ddadf9913c0922ff3b",
+        },
         required=False,
-        example="3bd14a1e8fb645ddadf9913c0922ff3b",
     )
 
 
@@ -117,14 +120,20 @@ class DefaultConfigValuesSchema(OpenAPISchema):
 
     connected_to_endorsers = fields.List(
         fields.Nested(EndorserLedgerConfigSchema()),
-        description="Endorser config",
+        metadata={
+            "description": "Endorser config",
+        },
     )
     created_public_did = fields.List(
         fields.Str(
-            description="Ledger identifier",
+            metadata={
+                "description": "Ledger identifier",
+            },
             required=False,
         ),
-        description="Public DID config",
+        metadata={
+            "description": "Public DID config",
+        },
     )
 
 
@@ -133,19 +142,25 @@ class ReservationRequestSchema(OpenAPISchema):
 
     tenant_name = fields.Str(
         required=True,
-        description="Proposed name of Tenant",
-        example="line of business short name",
+        metadata={
+            "description": "Proposed name of Tenant",
+            "example": "line of business short name",
+        },
     )
 
     contact_email = fields.Str(
         required=True,
-        description="Contact email for this tenant request",
+        metadata={
+            "description": "Contact email for this tenant request",
+        },
     )
 
     context_data = fields.Dict(
         required=False,
-        description="Optional context data for this tenant request",
-        example={"contact_phone": "555-555-5555"},
+        metadata={
+            "description": "Optional context data for this tenant request",
+            "example": {"contact_phone": "555-555-5555"},
+        },
     )
 
 
@@ -154,8 +169,10 @@ class ReservationResponseSchema(OpenAPISchema):
 
     reservation_id = fields.Str(
         required=True,
-        description="The reservation record identifier",
-        example=UUIDFour.EXAMPLE,
+        metadata={
+            "description": "The reservation record identifier",
+            "example": UUIDFour.EXAMPLE,
+        },
     )
 
 
@@ -164,8 +181,10 @@ class CheckinSchema(OpenAPISchema):
 
     reservation_pwd = fields.Str(
         required=True,
-        description="The reservation password",
-        example=UUIDFour.EXAMPLE,
+        metadata={
+            "description": "The reservation password",
+            "example": UUIDFour.EXAMPLE,
+        },
     )
 
 
@@ -173,14 +192,17 @@ class CheckinResponseSchema(OpenAPISchema):
     """Response schema for reservation Check-in."""
 
     wallet_id = fields.Str(
-        description="Subwallet identifier", required=True, example=UUIDFour.EXAMPLE
+        required=True,
+        metadata={"description": "Subwallet identifier", "example": UUIDFour.EXAMPLE},
     )
     wallet_key = fields.Str(
-        description="Master key used for key derivation.", example="MySecretKey123"
+        metadata={"description": "Subwallet identifier", "example": UUIDFour.EXAMPLE}
     )
     token = fields.Str(
-        description="Authorization token to authenticate wallet requests",
-        example=JSONWebToken.EXAMPLE,
+        metadata={
+            "description": "Master key used for key derivation.",
+            "example": "MySecretKey123",
+        }
     )
 
 
@@ -189,13 +211,14 @@ class ReservationListSchema(OpenAPISchema):
 
     results = fields.List(
         fields.Nested(ReservationRecordSchema()),
-        description="List of reservations",
+        metadata={"description": "Authorization token to authenticate wallet requests"},
     )
 
 
 class ReservationIdMatchInfoSchema(OpenAPISchema):
     reservation_id = fields.Str(
-        description="Reservation identifier", required=True, example=UUIDFour.EXAMPLE
+        required=True,
+        metadata={"description": "Reservation identifier", "example": UUIDFour.EXAMPLE},
     )
 
 
@@ -212,7 +235,9 @@ class ReservationApproveResponseSchema(OpenAPISchema):
 
     reservation_pwd = fields.Str(
         required=True,
-        description="The reservation password - deliver to tenant contact",
+        metadata={
+            "description": "The reservation password - deliver to tenant contact",
+        },
     )
 
 
@@ -221,8 +246,10 @@ class ReservationApproveRequestSchema(OpenAPISchema):
 
     state_notes = fields.Str(
         required=False,
-        description="Reason(s) for approving a tenant reservation",
-        example="Welcome",
+        metadata={
+            "description": "Reason(s) for approving a tenant reservation",
+            "example": "Welcome",
+        },
     )
 
 
@@ -231,14 +258,17 @@ class ReservationDenyRequestSchema(OpenAPISchema):
 
     state_notes = fields.Str(
         required=True,
-        description="Reason(s) for approving or denying a tenant reservation",
-        example="No room at the inn.",
+        metadata={
+            "description": "Reason(s) for approving or denying a tenant reservation",
+            "example": "No room at the inn.",
+        },
     )
 
 
 class TenantIdMatchInfoSchema(OpenAPISchema):
     tenant_id = fields.Str(
-        description="Tenant identifier", required=True, example=UUIDFour.EXAMPLE
+        required=True,
+        metadata={"description": "Tenant identifier", "example": UUIDFour.EXAMPLE},
     )
 
 
@@ -247,14 +277,15 @@ class TenantAuthenticationsApiRequestSchema(OpenAPISchema):
 
     tenant_id = fields.Str(
         required=True,
-        description="Tenant ID",
-        example=UUIDFour.EXAMPLE,
+        metadata={"description": "Tenant ID", "example": UUIDFour.EXAMPLE},
     )
 
     alias = fields.Str(
         required=True,
-        description="Alias/label",
-        example="API key for sample line of business",
+        metadata={
+            "description": "Alias/label",
+            "example": "API key for sample line of business",
+        },
     )
 
 
@@ -263,14 +294,18 @@ class TenantAuthenticationsApiResponseSchema(OpenAPISchema):
 
     tenant_authentication_api_id = fields.Str(
         required=True,
-        description="The API key record identifier",
-        example=UUIDFour.EXAMPLE,
+        metadata={
+            "description": "The API key record identifier",
+            "example": UUIDFour.EXAMPLE,
+        },
     )
 
     api_key = fields.Str(
         required=True,
-        description="The API key",
-        example="3bd14a1e8fb645ddadf9913c0922ff3b",
+        metadata={
+            "description": "The API key",
+            "example": "3bd14a1e8fb645ddadf9913c0922ff3b",
+        },
     )
 
 
@@ -279,7 +314,7 @@ class TenantListSchema(OpenAPISchema):
 
     results = fields.List(
         fields.Nested(TenantRecordSchema()),
-        description="List of tenants",
+        metadata={"description": "List of tenants"},
     )
 
 
@@ -288,8 +323,10 @@ class TenantListQuerySchema(OpenAPISchema):
 
     state = fields.Str(
         required=False,
-        description="The state of the tenants to filter by.",
-        example=TenantRecord.STATE_ACTIVE,
+        metadata={
+            "description": "The state of the tenants to filter by.",
+            "example": TenantRecord.STATE_ACTIVE,
+        },
         validate=validate.OneOf(
             [TenantRecord.STATE_ACTIVE, TenantRecord.STATE_DELETED, "all"]
         ),
@@ -301,7 +338,9 @@ class TenantAuthenticationApiListSchema(OpenAPISchema):
 
     results = fields.List(
         fields.Nested(TenantAuthenticationApiRecordSchema()),
-        description="List of reservations",
+        metadata={
+            "description": "List of reservations",
+        },
     )
 
 
@@ -309,9 +348,11 @@ class TenantAuthenticationApiIdMatchInfoSchema(OpenAPISchema):
     """Schema for finding a tenant auth user by the record ID."""
 
     tenant_authentication_api_id = fields.Str(
-        description="Tenant authentication api key identifier",
         required=True,
-        example=UUIDFour.EXAMPLE,
+        metadata={
+            "description": "Tenant authentication api key identifier",
+            "example": UUIDFour.EXAMPLE,
+        },
     )
 
 
@@ -320,7 +361,9 @@ class TenantAuthenticationApiOperationResponseSchema(OpenAPISchema):
 
     success = fields.Bool(
         required=True,
-        description="True if operation successful, false if otherwise",
+        metadata={
+            "description": "True if operation successful, false if otherwise",
+        },
     )
 
 
@@ -520,6 +563,30 @@ async def tenant_create_token(request: web.BaseRequest):
     token = await multitenant_mgr.create_auth_token(wallet_record, key)
 
     return web.json_response({"token": token})
+
+
+@docs(
+    tags=["multitenancy"],
+    summary="Get auth token for a subwallet (innkeeper plugin override)",
+)
+@request_schema(CreateWalletTokenRequestSchema)
+@response_schema(CreateWalletTokenResponseSchema(), 200, description="")
+@error_handler
+async def tenant_wallet_create_token(request: web.BaseRequest):
+    context: AdminRequestContext = request["context"]
+    wallet_id = request.match_info["wallet_id"]
+
+    mgr = context.inject(TenantManager)
+    profile = mgr.profile
+
+    # Tenants must always be fetch by their wallet id.
+    async with profile.session() as session:
+        rec = await TenantRecord.query_by_wallet_id(session, wallet_id)
+        LOGGER.debug("when creating token ", rec)
+        if rec.state == TenantRecord.STATE_DELETED:
+            raise web.HTTPUnauthorized(reason="Tenant is disabled")
+
+    return await plugin_wallet_create_token(request)
 
 
 @docs(
@@ -809,7 +876,35 @@ async def innkeeper_tenant_delete(request: web.BaseRequest):
             return web.json_response({"success": f"Tenant {tenant_id} soft deleted."})
         else:
             raise web.HTTPNotFound(reason=f"Tenant {tenant_id} not found.")
-    
+
+
+@docs(
+    tags=[SWAGGER_CATEGORY],
+)
+@match_info_schema(TenantIdMatchInfoSchema())
+@response_schema(TenantRecordSchema(), 200, description="")
+@innkeeper_only
+@error_handler
+async def innkeeper_tenant_hard_delete(request: web.BaseRequest):
+    context: AdminRequestContext = request["context"]
+    tenant_id = request.match_info["tenant_id"]
+
+    mgr = context.inject(TenantManager)
+    profile = mgr.profile
+    async with profile.session() as session:
+        rec = await TenantRecord.retrieve_by_id(session, tenant_id)
+        if rec:
+            multitenant_mgr = context.profile.inject(BaseMultitenantManager)
+            wallet_id = rec.wallet_id
+            await WalletRecord.retrieve_by_id(session, wallet_id)
+
+            await multitenant_mgr.remove_wallet(wallet_id)
+            await rec.delete_record(session)
+            LOGGER.info("Tenant %s rd deleted.", tenant_id)
+            return web.json_response({"success": f"Tenant {tenant_id} hard deleted."})
+        else:
+            raise web.HTTPNotFound(reason=f"Tenant {tenant_id} not found.")
+
 
 @docs(
     tags=[SWAGGER_CATEGORY],
@@ -822,10 +917,10 @@ async def innkeeper_tenant_delete(request: web.BaseRequest):
 async def innkeeper_tenant_restore(request: web.BaseRequest):
     context: AdminRequestContext = request["context"]
     tenant_id = request.match_info["tenant_id"]
-    
+
     mgr = context.inject(TenantManager)
     profile = mgr.profile
-    
+
     async with profile.session() as session:
         rec = await TenantRecord.retrieve_by_id(session, tenant_id)
         if rec:
@@ -837,7 +932,7 @@ async def innkeeper_tenant_restore(request: web.BaseRequest):
                 return web.json_response({"success": f"Tenant {tenant_id} restored."})
         else:
             raise web.HTTPNotFound(reason=f"Tenant {tenant_id} not found.")
- 
+
 
 @docs(tags=[SWAGGER_CATEGORY], summary="Create API Key Record")
 @request_schema(TenantAuthenticationsApiRequestSchema())
@@ -852,7 +947,6 @@ async def innkeeper_authentications_api(request: web.BaseRequest):
 
     # keys are under base/root profile, use Tenant Manager profile
     mgr = context.inject(TenantManager)
-    profile = mgr.profile
 
     try:
         api_key, tenant_authentication_api_id = await create_api_key(rec, mgr)
@@ -960,9 +1054,7 @@ async def innkeeper_config_handler(request: web.BaseRequest):
     profile = mgr.profile
 
     config = {
-        key: (
-           profile.context.settings[key]
-        )
+        key: (profile.context.settings[key])
         for key in profile.context.settings
         if key
         not in [
@@ -975,9 +1067,13 @@ async def innkeeper_config_handler(request: web.BaseRequest):
         ]
     }
     try:
-      del config["plugin_config"]["traction_innkeeper"]["innkeeper_wallet"]["wallet_key"]
+        del config["plugin_config"]["traction_innkeeper"]["innkeeper_wallet"][
+            "wallet_key"
+        ]
     except KeyError as e:
-      LOGGER.warn(f"The key to be removed: '{e.args[0]}' is missing from the dictionary.")
+        LOGGER.warn(
+            f"The key to be removed: '{e.args[0]}' is missing from the dictionary."
+        )
     config["version"] = __version__
 
     return web.json_response({"config": config})
@@ -999,8 +1095,25 @@ async def register(app: web.Application):
                 "/multitenancy/reservations/{reservation_id}/check-in", tenant_checkin
             ),
             web.post("/multitenancy/tenant/{tenant_id}/token", tenant_create_token),
+            web.post(
+                "/multitenancy/wallet/{wallet_id}/token", tenant_wallet_create_token
+            ),
         ]
     )
+    # Find the endpoint for token creation that already exists and
+    # override it
+    for r in app.router.routes():
+        if r.method == "POST":
+            if (
+                r.resource
+                and r.resource.canonical == "/multitenancy/wallet/{wallet_id}/token"
+            ):
+                LOGGER.info(
+                    f"found route: {r.method} {r.resource.canonical} ({r.handler})"
+                )
+                LOGGER.info(f"... replacing current handler: {r.handler}")
+                r._handler = tenant_wallet_create_token
+                LOGGER.info(f"... with new handler: {r.handler}")
     # routes that require a tenant token for the innkeeper wallet/tenant/agent.
     # these require not only a tenant, but it has to be the innkeeper tenant!
     app.add_routes(
@@ -1033,6 +1146,9 @@ async def register(app: web.Application):
             ),
             web.put("/innkeeper/tenants/{tenant_id}/config", tenant_config_update),
             web.delete("/innkeeper/tenants/{tenant_id}", innkeeper_tenant_delete),
+            web.delete(
+                "/innkeeper/tenants/{tenant_id}/hard", innkeeper_tenant_hard_delete
+            ),
             web.put("/innkeeper/tenants/{tenant_id}/restore", innkeeper_tenant_restore),
             web.get(
                 "/innkeeper/default-config",

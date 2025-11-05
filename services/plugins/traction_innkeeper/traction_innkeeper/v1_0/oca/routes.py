@@ -9,17 +9,18 @@ from aiohttp_apispec import (
     querystring_schema,
     match_info_schema,
 )
-from aries_cloudagent.admin.request_context import AdminRequestContext
-from aries_cloudagent.messaging.models.base import BaseModelError
-from aries_cloudagent.messaging.models.openapi import OpenAPISchema
-from aries_cloudagent.messaging.valid import (
+from acapy_agent.admin.request_context import AdminRequestContext
+from acapy_agent.messaging.models.base import BaseModelError
+from acapy_agent.messaging.models.openapi import OpenAPISchema
+from acapy_agent.messaging.valid import (
     INDY_SCHEMA_ID_EXAMPLE,
     INDY_SCHEMA_ID_VALIDATE,
     INDY_CRED_DEF_ID_EXAMPLE,
     INDY_CRED_DEF_ID_VALIDATE,
     UUIDFour,
 )
-from aries_cloudagent.storage.error import StorageNotFoundError, StorageError
+from acapy_agent.storage.error import StorageNotFoundError, StorageError
+from acapy_agent.admin.decorators.auth import tenant_authentication
 from marshmallow import fields, ValidationError
 
 from . import OcaService
@@ -56,9 +57,12 @@ def error_handler(func):
 
 class OcaRecordListQueryStringSchema(OpenAPISchema):
     cred_def_id = fields.Str(
-        required=False, description="Cred Def identifier", 
-        example=INDY_CRED_DEF_ID_EXAMPLE, 
-        validate=INDY_CRED_DEF_ID_VALIDATE
+        required=False,
+        metadata={
+            "description": "Cred Def identifier",
+            "example": INDY_CRED_DEF_ID_EXAMPLE,
+        },
+        validate=INDY_CRED_DEF_ID_VALIDATE,
     )
 
 
@@ -67,7 +71,9 @@ class OcaRecordListSchema(OpenAPISchema):
 
     results = fields.List(
         fields.Nested(OcaRecordSchema()),
-        description="List of OCA records",
+        metadata={
+            "description": "List of OCA records",
+        },
     )
 
 
@@ -76,26 +82,35 @@ class AddOcaRecordRequestSchema(OpenAPISchema):
 
     schema_id = fields.Str(
         required=False,
-        description="Schema identifier",
         validate=INDY_SCHEMA_ID_VALIDATE,
-        example=INDY_SCHEMA_ID_EXAMPLE,
+        metadata={
+            "description": "Schema identifier",
+            "example": INDY_SCHEMA_ID_EXAMPLE,
+        },
     )
     cred_def_id = fields.Str(
         required=False,
-        description="Cred Def identifier",
         validate=INDY_CRED_DEF_ID_VALIDATE,
-        example=INDY_CRED_DEF_ID_EXAMPLE,
+        metadata={
+            "description": "Cred Def identifier",
+            "example": INDY_CRED_DEF_ID_EXAMPLE,
+        },
     )
-    url = fields.Str(required=False, description="(Public) Url for OCA Bundle")
+    url = fields.Str(
+        required=False, metadata={"description": "(Public) Url for OCA Bundle"}
+    )
     bundle = fields.Dict(
         required=False,
-        description="OCA Bundle",
+        metadata={
+            "description": "OCA Bundle",
+        },
     )
 
 
 class OcaIdMatchInfoSchema(OpenAPISchema):
     oca_id = fields.Str(
-        description="OCA Record identifier", required=True, example=UUIDFour.EXAMPLE
+        required=True,
+        metadata={"description": "OCA Record identifier", "example": UUIDFour.EXAMPLE},
     )
 
 
@@ -104,7 +119,9 @@ class OcaRecordOperationResponseSchema(OpenAPISchema):
 
     success = fields.Bool(
         required=True,
-        description="True if operation successful, false if otherwise",
+        metadata={
+            "description": "True if operation successful, false if otherwise",
+        },
     )
 
 
@@ -112,6 +129,7 @@ class OcaRecordOperationResponseSchema(OpenAPISchema):
 @request_schema(AddOcaRecordRequestSchema())
 @response_schema(OcaRecordSchema(), 200, description="")
 @error_handler
+@tenant_authentication
 async def oca_record_create(request: web.BaseRequest):
     context: AdminRequestContext = request["context"]
     service = context.inject(OcaService)
@@ -126,6 +144,7 @@ async def oca_record_create(request: web.BaseRequest):
 @match_info_schema(OcaIdMatchInfoSchema())
 @response_schema(OcaRecordSchema(), 200, description="")
 @error_handler
+@tenant_authentication
 async def oca_record_read(request: web.BaseRequest):
     context: AdminRequestContext = request["context"]
     service = context.inject(OcaService)
@@ -141,6 +160,7 @@ async def oca_record_read(request: web.BaseRequest):
 @request_schema(OcaRecordSchema())
 @response_schema(OcaRecordSchema(), 200, description="")
 @error_handler
+@tenant_authentication
 async def oca_record_update(request: web.BaseRequest):
     context: AdminRequestContext = request["context"]
     service = context.inject(OcaService)
@@ -155,6 +175,7 @@ async def oca_record_update(request: web.BaseRequest):
 @match_info_schema(OcaIdMatchInfoSchema())
 @response_schema(OcaRecordOperationResponseSchema, 200, description="")
 @error_handler
+@tenant_authentication
 async def oca_record_delete(request: web.BaseRequest):
     context: AdminRequestContext = request["context"]
     service = context.inject(OcaService)
@@ -169,6 +190,7 @@ async def oca_record_delete(request: web.BaseRequest):
 @querystring_schema(OcaRecordListQueryStringSchema())
 @response_schema(OcaRecordListSchema(), 200, description="")
 @error_handler
+@tenant_authentication
 async def oca_record_list(request: web.BaseRequest):
     context: AdminRequestContext = request["context"]
     service = context.inject(OcaService)
