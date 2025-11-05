@@ -29,7 +29,7 @@ traction_innkeeper:
   reservation:
     auto_approve: true
     expiry_minutes: 2880
-    auto_issuer: false
+    auto_issuer: true
 
 basicmessage_storage:
   wallet_enabled: true
