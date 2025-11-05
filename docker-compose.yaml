@@ -308,8 +308,6 @@ services:
 
 volumes:
   traction-wallet:
-  endorser-wallet:
-  endorser-wallet-1:
   keycloak_data:
   postgres_data:
 
