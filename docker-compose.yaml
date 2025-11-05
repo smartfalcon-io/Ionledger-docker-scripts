@@ -265,10 +265,11 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - ./ngnix:/etc/nginx/conf.d      # mount correct configs
-      - ./nginx/certs:/etc/letsencrypt:ro
+      - ./ngnix:/etc/nginx/conf.d
+      - /etc/letsencrypt:/etc/letsencrypt:ro
       - ./nginx/www:/var/www/certbot
       - ./nginx/logs:/var/log/nginx
+
     depends_on:
       - tenant-ui
       - ion-ledger-web-ui
