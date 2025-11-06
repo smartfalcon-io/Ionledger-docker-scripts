@@ -1,9 +1,5 @@
 
 
-set -e  
-
-# export EC2_PUBLIC_DNS="ec2-13-126-137-120.ap-south-1.compute.amazonaws.com"
-# export EC2_PUBLIC_IP="13.126.137.120"
 
 if [[ "${TRACTION_ENV}" == "ec2" ]]; then
     echo "Using EC2 endpoint configuration..."

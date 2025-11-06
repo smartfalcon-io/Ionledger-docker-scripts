@@ -1,4 +1,3 @@
-set -e  # Exit immediately on error
 
 
 if [[ "${TRACTION_ENV}" == "ec2" ]]; then
