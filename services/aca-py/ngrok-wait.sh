@@ -12,8 +12,7 @@ if [[ "${TRACTION_ENV}" == "ec2" ]]; then
         sleep 5
     done
 
-    export ACAPY_ENDPOINT="http://traction-agent:8030"
-
+    export ACAPY_ENDPOINT="$EC2_ENDPOINT"
 fi
 
 echo "-------------------------------------------------------"
