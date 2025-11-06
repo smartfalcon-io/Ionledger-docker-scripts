@@ -216,6 +216,7 @@ services:
       - SCHEMA_NAME=${SCHEMA_NAME}
       - SCHEMA_VERSION=${SCHEMA_VERSION}
       - CRED_DEF_ID=${CRED_DEF_ID}
+      - TOKEN_URL=http://keycloak:8080/realms/master/protocol/openid-connect/token
     networks: 
       - app-network
 
