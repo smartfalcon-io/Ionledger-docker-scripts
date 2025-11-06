@@ -1,7 +1,7 @@
 from typing import Optional
 
-from acapy_agent.messaging.models.base_record import BaseRecord, BaseRecordSchema
-from acapy_agent.messaging.valid import (
+from aries_cloudagent.messaging.models.base_record import BaseRecord, BaseRecordSchema
+from aries_cloudagent.messaging.valid import (
     INDY_SCHEMA_ID_VALIDATE,
     INDY_SCHEMA_ID_EXAMPLE,
     INDY_REV_REG_SIZE_VALIDATE,
@@ -67,37 +67,29 @@ class CredDefStorageRecordSchema(BaseRecordSchema):
 
     cred_def_id = fields.Str(
         required=True,
+        description="Cred Def identifier",
         validate=INDY_CRED_DEF_ID_VALIDATE,
-        metadata={
-            "description": "Cred Def identifier",
-            "example": INDY_CRED_DEF_ID_EXAMPLE,
-        },
+        example=INDY_CRED_DEF_ID_EXAMPLE,
     )
     schema_id = fields.Str(
+        description="Schema identifier",
         validate=INDY_SCHEMA_ID_VALIDATE,
-        metadata={
-            "description": "Schema identifier",
-            "example": INDY_SCHEMA_ID_EXAMPLE,
-        },
+        example=INDY_SCHEMA_ID_EXAMPLE,
     )
     support_revocation = fields.Boolean(
-        required=False, metadata={"description": "Revocation supported flag"}
+        required=False, description="Revocation supported flag"
     )
     rev_reg_size = fields.Int(
+        description="Revocation registry size",
         required=False,
         strict=True,
         allow_none=True,
         validate=INDY_REV_REG_SIZE_VALIDATE,
-        metadata={
-            "description": "Revocation registry size",
-            "example": INDY_REV_REG_SIZE_EXAMPLE,
-        },
+        example=INDY_REV_REG_SIZE_EXAMPLE,
     )
     tag = fields.Str(
         required=False,
-        metadata={
-            "description": "Credential definition identifier tag",
-            "default": "default",
-            "example": "default",
-        },
+        description="Credential definition identifier tag",
+        default="default",
+        example="default",
     )

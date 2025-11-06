@@ -1,7 +1,7 @@
 from typing import Optional
 
-from acapy_agent.messaging.models.base_record import BaseRecord, BaseRecordSchema
-from acapy_agent.messaging.valid import (
+from aries_cloudagent.messaging.models.base_record import BaseRecord, BaseRecordSchema
+from aries_cloudagent.messaging.valid import (
     INDY_SCHEMA_ID_VALIDATE,
     INDY_SCHEMA_ID_EXAMPLE,
     INDY_CRED_DEF_ID_VALIDATE,
@@ -71,36 +71,24 @@ class OcaRecordSchema(BaseRecordSchema):
 
     oca_id = fields.Str(
         required=True,
-        metadata={
-            "description": "OCA Record identifier",
-            "example": UUIDFour.EXAMPLE,
-        },
+        description="OCA Record identifier",
+        example=UUIDFour.EXAMPLE,
     )
     schema_id = fields.Str(
         required=False,
+        description="Schema identifier",
         validate=INDY_SCHEMA_ID_VALIDATE,
-        metadata={
-            "description": "Schema identifier",
-            "example": INDY_SCHEMA_ID_EXAMPLE,
-        },
+        example=INDY_SCHEMA_ID_EXAMPLE,
     )
     cred_def_id = fields.Str(
         required=False,
+        description="Cred Def identifier",
         validate=INDY_CRED_DEF_ID_VALIDATE,
-        metadata={
-            "description": "Cred Def identifier",
-            "example": INDY_CRED_DEF_ID_EXAMPLE,
-        },
+        example=INDY_CRED_DEF_ID_EXAMPLE,
     )
-    url = fields.Str(
-        required=False, metadata={"description": "(Public) Url for OCA Bundle"}
-    )
+    url = fields.Str(required=False, description="(Public) Url for OCA Bundle")
     bundle = fields.Dict(
         required=False,
-        metadata={
-            "description": "OCA Bundle",
-        },
+        description="OCA Bundle",
     )
-    owner_did = fields.Str(
-        required=False, metadata={"description": "Public DID of OCA record owner"}
-    )
+    owner_did = fields.Str(required=False, description="Public DID of OCA record owner")

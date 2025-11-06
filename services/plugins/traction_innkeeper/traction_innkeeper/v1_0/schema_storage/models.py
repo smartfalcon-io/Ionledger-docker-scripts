@@ -1,7 +1,7 @@
 from typing import Optional
 
-from acapy_agent.messaging.models.base_record import BaseRecord, BaseRecordSchema
-from acapy_agent.messaging.valid import (
+from aries_cloudagent.messaging.models.base_record import BaseRecord, BaseRecordSchema
+from aries_cloudagent.messaging.valid import (
     INDY_SCHEMA_ID_EXAMPLE,
     INDY_SCHEMA_ID_VALIDATE,
 )
@@ -64,20 +64,14 @@ class SchemaStorageRecordSchema(BaseRecordSchema):
 
     schema_id = fields.Str(
         required=True,
+        description="Schema identifier",
         validate=INDY_SCHEMA_ID_VALIDATE,
-        metadata={
-            "description": "Schema identifier",
-            "example": INDY_SCHEMA_ID_EXAMPLE,
-        },
+        example=INDY_SCHEMA_ID_EXAMPLE,
     )
-    ledger_id = fields.Str(
-        required=False, metadata={"description": "Schema identifier"}
-    )
+    ledger_id = fields.Str(required=False, description="Schema identifier")
 
     schema = fields.Dict(
         required=False,
-        metadata={"description": "(Indy) schema"},
+        description="(Indy) schema",
     )
-    schema_dict = fields.Dict(
-        required=False, metadata={"description": "Serialized schema"}
-    )
+    schema_dict = fields.Dict(required=False, description="Serialized schema")

@@ -2,19 +2,18 @@ import functools
 import logging
 
 from aiohttp import web
-from aiohttp_apispec import docs, response_schema
-from acapy_agent.admin.request_context import AdminRequestContext
-from acapy_agent.connections.models.conn_record import ConnRecordSchema
-from acapy_agent.messaging.models.base import BaseModelError
-from acapy_agent.messaging.models.openapi import OpenAPISchema
-from acapy_agent.protocols.didexchange.v1_0.manager import DIDXManagerError
-from acapy_agent.protocols.endorse_transaction.v1_0.routes import (
+from aiohttp_apispec import docs, response_schema, request_schema
+from aries_cloudagent.admin.request_context import AdminRequestContext
+from aries_cloudagent.connections.models.conn_record import ConnRecordSchema
+from aries_cloudagent.messaging.models.base import BaseModelError
+from aries_cloudagent.messaging.models.openapi import OpenAPISchema
+from aries_cloudagent.protocols.didexchange.v1_0.manager import DIDXManagerError
+from aries_cloudagent.protocols.endorse_transaction.v1_0.routes import (
     EndorserInfoSchema,
 )
 
-from acapy_agent.storage.error import StorageNotFoundError, StorageError
-from acapy_agent.wallet.error import WalletError
-from acapy_agent.admin.decorators.auth import tenant_authentication
+from aries_cloudagent.storage.error import StorageNotFoundError, StorageError
+from aries_cloudagent.wallet.error import WalletError
 from marshmallow import fields
 
 from .endorser_connection_service import EndorserConnectionService
@@ -56,16 +55,12 @@ class EndorserInfoResponseSchema(OpenAPISchema):
 
     endorser_name = fields.Str(
         required=True,
-        metadata={
-            "description": "Alias/name for endorser connection",
-        },
+        description="Alias/name for endorser connection",
     )
 
     endorser_did = fields.Str(
         required=True,
-        metadata={
-            "description": "Alias/name for endorser connection",
-        },
+        description="Alias/name for endorser connection",
     )
 
 
@@ -73,7 +68,6 @@ class EndorserInfoResponseSchema(OpenAPISchema):
 # @request_schema(EndorserLedgerRequestSchema)
 @response_schema(ConnRecordSchema(), 200, description="")
 @error_handler
-@tenant_authentication
 async def endorser_connection_set(request: web.BaseRequest):
     """
     Request handler for creating and sending a request to a configured endorser
@@ -124,7 +118,6 @@ async def endorser_connection_set(request: web.BaseRequest):
 )
 @response_schema(ConnRecordSchema(), 200)
 @error_handler
-@tenant_authentication
 async def endorser_connection_get(request: web.BaseRequest):
     context: AdminRequestContext = request["context"]
     profile = context.profile
@@ -144,7 +137,6 @@ async def endorser_connection_get(request: web.BaseRequest):
 )
 @response_schema(EndorserInfoSchema(), 200)
 @error_handler
-@tenant_authentication
 async def endorser_info_get(request: web.BaseRequest):
     context: AdminRequestContext = request["context"]
     profile = context.profile

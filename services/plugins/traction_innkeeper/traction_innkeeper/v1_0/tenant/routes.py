@@ -7,22 +7,21 @@ from aiohttp_apispec import (
     response_schema,
     request_schema,
 )
-from acapy_agent.admin.request_context import AdminRequestContext
-from acapy_agent.admin.routes import AdminConfigSchema
-from acapy_agent.messaging.models.openapi import OpenAPISchema
-from acapy_agent.multitenant.admin.routes import (
+from aries_cloudagent.admin.request_context import AdminRequestContext
+from aries_cloudagent.admin.server import AdminConfigSchema
+from aries_cloudagent.messaging.models.openapi import OpenAPISchema
+from aries_cloudagent.multitenant.admin.routes import (
     format_wallet_record,
     UpdateWalletRequestSchema,
     get_extra_settings_dict_per_tenant,
 )
-from acapy_agent.multitenant.base import BaseMultitenantManager
-from acapy_agent.storage.error import StorageNotFoundError
-from acapy_agent.version import __version__
-from acapy_agent.wallet.models.wallet_record import (
+from aries_cloudagent.multitenant.base import BaseMultitenantManager
+from aries_cloudagent.storage.error import StorageNotFoundError
+from aries_cloudagent.version import __version__
+from aries_cloudagent.wallet.models.wallet_record import (
     WalletRecordSchema,
     WalletRecord,
 )
-from acapy_agent.admin.decorators.auth import tenant_authentication
 from marshmallow import fields, validate
 
 from ..innkeeper.routes import (
@@ -50,21 +49,17 @@ SWAGGER_CATEGORY = "traction-tenant"
 
 class CustomUpdateWalletRequestSchema(UpdateWalletRequestSchema):
     image_url = fields.Str(
-        metadata={
-            "description": "Image url for this wallet. This image url is publicized\
+        description="Image url for this wallet. This image url is publicized\
             (self-attested) to other agents as part of forming a connection.",
-            "example": "https://aries.ca/images/sample.png",
-        },
+        example="https://aries.ca/images/sample.png",
         validate=validate.URL(),
     )
 
 
 class UpdateContactRequestSchema(OpenAPISchema):
     contact_email = fields.Str(
-        metadata={
-            "description": "The new email to associate with this tenant.",
-            "example": "example@exampleserver.com",
-        },
+        description="The new email to associate with this tenant.",
+        example="example@exampleserver.com",
         validate=validate.Email(),
     )
 
@@ -74,26 +69,20 @@ class TenantApiKeyRequestSchema(OpenAPISchema):
 
     alias = fields.Str(
         required=True,
-        metadata={
-            "description": "Alias/label",
-            "example": "API key for my Tenant",
-        },
+        description="Alias/label",
+        example="API key for my Tenant",
     )
 
 
 class TenantLedgerIdConfigSchema(OpenAPISchema):
     ledger_id = fields.Str(
-        metadata={"description": "Ledger identifier"},
+        description="Ledger identifier",
         required=True,
     )
-
 
 @web.middleware
 async def setup_tenant_context(request: web.Request, handler):
     """Middle ware to extract tenant_id and provide it to log formatter
-
-    In addition this will also ensure tenants are not suspended before
-    accessing endpoints.
 
     This middleware is appended to the app middlewares and therefore runs
     last. At this point the wallet_id has been extracted from a previous
@@ -113,9 +102,6 @@ async def setup_tenant_context(request: web.Request, handler):
             rec = await TenantRecord.query_by_wallet_id(session, wallet_id)
             LOGGER.debug(rec)
             tenant_id = rec.tenant_id
-            # Ensure tokens are not associated with suspended tenants
-            if TenantRecord.STATE_DELETED == rec.state:
-                raise web.HTTPUnauthorized(reason="Tenant Is Suspended")
 
     log_records_inject(tenant_id)
 
@@ -127,7 +113,6 @@ async def setup_tenant_context(request: web.Request, handler):
 )
 @response_schema(TenantRecordSchema(), 200, description="")
 @error_handler
-@tenant_authentication
 async def tenant_self(request: web.BaseRequest):
     context: AdminRequestContext = request["context"]
     # we need the caller's wallet id
@@ -148,7 +133,6 @@ async def tenant_self(request: web.BaseRequest):
 @docs(tags=[SWAGGER_CATEGORY], summary="Get a tenant subwallet")
 @response_schema(WalletRecordSchema(), 200, description="")
 @error_handler
-@tenant_authentication
 async def tenant_wallet_get(request: web.BaseRequest):
     context: AdminRequestContext = request["context"]
     # we need the caller's wallet id
@@ -170,7 +154,6 @@ async def tenant_wallet_get(request: web.BaseRequest):
 @docs(tags=[SWAGGER_CATEGORY], summary="Get tenant setting")
 @response_schema(TenantConfigSchema(), 200, description="")
 @error_handler
-@tenant_authentication
 async def tenant_config_get(request: web.BaseRequest):
     context: AdminRequestContext = request["context"]
     wallet_id = context.profile.settings.get("wallet.id")
@@ -198,7 +181,6 @@ async def tenant_config_get(request: web.BaseRequest):
 @request_schema(TenantLedgerIdConfigSchema)
 @response_schema(TenantLedgerIdConfigSchema(), 200, description="")
 @error_handler
-@tenant_authentication
 async def tenant_config_ledger_id_set(request: web.BaseRequest):
     context: AdminRequestContext = request["context"]
     wallet_id = context.profile.settings.get("wallet.id")
@@ -222,7 +204,6 @@ async def tenant_config_ledger_id_set(request: web.BaseRequest):
 @request_schema(CustomUpdateWalletRequestSchema)
 @response_schema(WalletRecordSchema(), 200, description="")
 @error_handler
-@tenant_authentication
 async def tenant_wallet_update(request: web.BaseRequest):
     context: AdminRequestContext = request["context"]
     # we need the caller's wallet id
@@ -282,7 +263,6 @@ async def tenant_wallet_update(request: web.BaseRequest):
 @request_schema(UpdateContactRequestSchema)
 @response_schema(UpdateContactRequestSchema, 200, description="")
 @error_handler
-@tenant_authentication
 async def tenant_email_update(request: web.BaseRequest):
     context: AdminRequestContext = request["context"]
     # we need the caller's wallet id
@@ -308,7 +288,6 @@ async def tenant_email_update(request: web.BaseRequest):
 @request_schema(TenantApiKeyRequestSchema())
 @response_schema(TenantAuthenticationsApiResponseSchema(), 200, description="")
 @error_handler
-@tenant_authentication
 async def tenant_api_key(request: web.BaseRequest):
     context: AdminRequestContext = request["context"]
     wallet_id = context.profile.settings.get("wallet.id")
@@ -343,7 +322,6 @@ async def tenant_api_key(request: web.BaseRequest):
 @match_info_schema(TenantAuthenticationApiIdMatchInfoSchema())
 @response_schema(TenantAuthenticationApiRecordSchema(), 200, description="")
 @error_handler
-@tenant_authentication
 async def tenant_api_key_get(request: web.BaseRequest):
     context: AdminRequestContext = request["context"]
     wallet_id = context.profile.settings.get("wallet.id")
@@ -374,7 +352,6 @@ async def tenant_api_key_get(request: web.BaseRequest):
 @docs(tags=[SWAGGER_CATEGORY], summary="List tenant API Key Records")
 @response_schema(TenantAuthenticationApiListSchema(), 200, description="")
 @error_handler
-@tenant_authentication
 async def tenant_api_key_list(request: web.BaseRequest):
     context: AdminRequestContext = request["context"]
     wallet_id = context.profile.settings.get("wallet.id")
@@ -401,7 +378,6 @@ async def tenant_api_key_list(request: web.BaseRequest):
 @match_info_schema(TenantAuthenticationApiIdMatchInfoSchema)
 @response_schema(TenantAuthenticationApiOperationResponseSchema, 200, description="")
 @error_handler
-@tenant_authentication
 async def tenant_api_key_delete(request: web.BaseRequest):
     context: AdminRequestContext = request["context"]
     wallet_id = context.profile.settings.get("wallet.id")
@@ -443,7 +419,6 @@ async def tenant_api_key_delete(request: web.BaseRequest):
 @docs(tags=[SWAGGER_CATEGORY], summary="Fetch the server configuration")
 @response_schema(AdminConfigSchema(), 200, description="")
 @error_handler
-@tenant_authentication
 async def tenant_server_config_handler(request: web.BaseRequest):
     context: AdminRequestContext = request["context"]
     # use base/root profile for server config, use Tenant Manager profile
@@ -490,55 +465,6 @@ async def tenant_server_config_handler(request: web.BaseRequest):
     return web.json_response({"config": config})
 
 
-@docs(
-    tags=[SWAGGER_CATEGORY],
-)
-@response_schema(TenantRecordSchema(), 200, description="")
-@error_handler
-async def tenant_delete_soft(request: web.BaseRequest):
-    context: AdminRequestContext = request["context"]
-    wallet_id = context.profile.settings.get("wallet.id")
-
-    mgr = context.inject(TenantManager)
-    profile = mgr.profile
-    async with profile.session() as session:
-        rec = await TenantRecord.query_by_wallet_id(session, wallet_id)
-        if rec:
-            await rec.soft_delete(session)
-            LOGGER.info("Tenant %s soft deleted.", rec.tenant_id)
-            return web.json_response(
-                {"success": f"Tenant {rec.tenant_id} soft deleted."}
-            )
-        else:
-            raise web.HTTPNotFound(reason="Tenant not found.")
-
-
-@docs(
-    tags=[SWAGGER_CATEGORY],
-)
-@response_schema(TenantRecordSchema(), 200, description="")
-@error_handler
-async def tenant_delete(request: web.BaseRequest):
-    context: AdminRequestContext = request["context"]
-    wallet_id = context.profile.settings.get("wallet.id")
-
-    mgr = context.inject(TenantManager)
-    profile = mgr.profile
-    async with profile.session() as session:
-        rec = await TenantRecord.query_by_wallet_id(session, wallet_id)
-        if rec:
-            multitenant_mgr = context.profile.inject(BaseMultitenantManager)
-
-            await multitenant_mgr.remove_wallet(rec.wallet_id)
-            await rec.delete_record(session)
-            LOGGER.info("Tenant %s rd deleted.", rec.tenant_id)
-            return web.json_response(rec.serialize())
-        else:
-            raise web.HTTPNotFound(
-                reason=f"Tenant with wallet id {wallet_id} not found."
-            )
-
-
 async def register(app: web.Application):
     """Register routes."""
     LOGGER.info("> registering routes")
@@ -573,8 +499,6 @@ async def register(app: web.Application):
                 tenant_server_config_handler,
                 allow_head=False,
             ),
-            web.delete("/tenant/hard", tenant_delete),
-            web.delete("/tenant/soft", tenant_delete_soft),
         ]
     )
     LOGGER.info("< registering routes")

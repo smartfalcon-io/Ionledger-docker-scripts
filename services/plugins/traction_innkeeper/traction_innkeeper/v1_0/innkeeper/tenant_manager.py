@@ -1,17 +1,18 @@
 import bcrypt
+from datetime import datetime, timedelta
 import logging
 from typing import List, Optional
 
-from acapy_agent.core.error import BaseError
-from acapy_agent.core.profile import Profile
-from acapy_agent.messaging.models.base import BaseModelError
-from acapy_agent.multitenant.base import BaseMultitenantManager
+from aries_cloudagent.core.error import BaseError
+from aries_cloudagent.core.profile import Profile
+from aries_cloudagent.messaging.models.base import BaseModelError
+from aries_cloudagent.multitenant.base import BaseMultitenantManager
 
-# from acapy_agent.ledger.multiple_ledger.base_manager import (
+# from aries_cloudagent.ledger.multiple_ledger.base_manager import (
 #     BaseMultipleLedgerManager,
 # )
-from acapy_agent.storage.error import StorageError, StorageNotFoundError
-from acapy_agent.wallet.models.wallet_record import WalletRecord
+from aries_cloudagent.storage.error import StorageError, StorageNotFoundError
+from aries_cloudagent.wallet.models.wallet_record import WalletRecord
 
 from .config import TractionInnkeeperConfig, InnkeeperWalletConfig, ReservationConfig
 from .models import TenantAuthenticationApiRecord, TenantRecord, ReservationRecord
@@ -274,7 +275,7 @@ class TenantManager:
             idx = 1
             while w:
                 self._logger.info(f"'{unique_wallet_name}': wallet_exists = {w}")
-                unique_wallet_name = f"{wallet_name}-{idx}"
+                unique_wallet_name = f"{unique_wallet_name}-{idx}"
                 w = await self.check_tables_for_wallet_name(session, unique_wallet_name)
                 idx += 1
         # return a unique wallet/tenant name, either the input or calculated...

@@ -3,11 +3,12 @@ import uuid
 from datetime import datetime, timezone
 from typing import Optional, Union, List
 
-from acapy_agent.core.profile import ProfileSession
-from acapy_agent.messaging.models.base_record import BaseRecord, BaseRecordSchema
-from acapy_agent.messaging.util import datetime_to_str, str_to_datetime
-from acapy_agent.messaging.valid import UUIDFour
-from acapy_agent.storage.error import StorageDuplicateError, StorageNotFoundError
+from aries_cloudagent.core.profile import ProfileSession
+from aries_cloudagent.ledger.base import LOGGER
+from aries_cloudagent.messaging.models.base_record import BaseRecord, BaseRecordSchema
+from aries_cloudagent.messaging.util import datetime_to_str, str_to_datetime
+from aries_cloudagent.messaging.valid import UUIDFour
+from aries_cloudagent.storage.error import StorageDuplicateError, StorageNotFoundError
 from marshmallow import fields, EXCLUDE, validate
 
 ENDORSER_LEDGER_CONFIG_EXAMPLE = {
@@ -167,63 +168,47 @@ class ReservationRecordSchema(BaseRecordSchema):
 
     reservation_id = fields.Str(
         required=True,
-        metadata={
-            "description": "Tenant Reservation Record identifier",
-            "example": UUIDFour.EXAMPLE,
-        },
+        description="Tenant Reservation Record identifier",
+        example=UUIDFour.EXAMPLE,
     )
 
     tenant_name = fields.Str(
         required=True,
-        metadata={
-            "description": "Proposed name of Tenant",
-            "example": "line of business short name",
-        },
+        description="Proposed name of Tenant",
+        example="line of business short name",
     )
 
     tenant_reason = fields.Str(
         required=True,
-        metadata={
-            "description": "Reason(s) for requesting a tenant",
-            "example": "Issue permits to clients",
-        },
+        description="Reason(s) for requesting a tenant",
+        example="Issue permits to clients",
     )
 
     contact_name = fields.Str(
         required=True,
-        metadata={
-            "description": "Contact name for this tenant request",
-        },
+        description="Contact name for this tenant request",
     )
 
     contact_email = fields.Str(
         required=True,
-        metadata={
-            "description": "Contact email for this tenant request",
-        },
+        description="Contact email for this tenant request",
     )
 
     contact_phone = fields.Str(
         required=True,
-        metadata={
-            "description": "Contact phone number for this tenant request",
-        },
+        description="Contact phone number for this tenant request",
     )
 
     context_data = fields.Dict(
         required=False,
-        metadata={
-            "description": "Context data for this tenant request",
-            "example": json.dumps(RESERVATION_CONTEXT_EXAMPLE),
-        },
+        description="Context data for this tenant request",
+        example=json.dumps(RESERVATION_CONTEXT_EXAMPLE),
     )
 
     state = fields.Str(
         required=True,
-        metadata={
-            "description": "The state of the tenant request.",
-            "example": ReservationRecord.STATE_REQUESTED,
-        },
+        description="The state of the tenant request.",
+        example=ReservationRecord.STATE_REQUESTED,
         validate=validate.OneOf(
             [
                 ReservationRecord.STATE_REQUESTED,
@@ -235,40 +220,30 @@ class ReservationRecordSchema(BaseRecordSchema):
 
     state_notes = fields.Str(
         required=False,
-        metadata={
-            "description": "Notes about the state of the tenant request",
-        },
+        description="Notes about the state of the tenant request",
     )
 
     tenant_id = fields.Str(
         required=False,
-        metadata={
-            "description": "Tenant Record identifier",
-            "example": UUIDFour.EXAMPLE,
-        },
+        description="Tenant Record identifier",
+        example=UUIDFour.EXAMPLE,
     )
 
     wallet_id = fields.Str(
         required=False,
-        metadata={
-            "description": "Tenant Wallet Record identifier",
-            "example": UUIDFour.EXAMPLE,
-        },
+        description="Tenant Wallet Record identifier",
+        example=UUIDFour.EXAMPLE,
     )
 
     connect_to_endorser = fields.List(
-        fields.Dict(
-            metadata={"description": "Endorser and ledger config"}, required=False
-        ),
-        metadata={
-            "example": json.dumps(ENDORSER_LEDGER_CONFIG_EXAMPLE),
-        },
+        fields.Dict(description="Endorser and ledger config", required=False),
+        example=json.dumps(ENDORSER_LEDGER_CONFIG_EXAMPLE),
         required=False,
         attribute="connect_to_endorsers",
     )
 
     create_public_did = fields.List(
-        fields.Str(metadata={"description": "Ledger id"}),
+        fields.Str(description="Ledger id"),
         required=False,
     )
 
@@ -382,18 +357,11 @@ class TenantRecord(BaseRecord):
         Soft delete the tenant record by setting its state to 'deleted'.
         Note: This method should be called on an instance of the TenantRecord.
         """
-        # Delete api records
-        recs = await TenantAuthenticationApiRecord.query_by_tenant_id(
-            session, self.tenant_id
-        )
-        for rec in recs:
-            if rec.tenant_id == self.tenant_id:
-                await rec.delete_record(session)
-
         if self.state != self.STATE_DELETED:
             self.state = self.STATE_DELETED
             self.deleted_at = datetime_to_str(datetime.utcnow())
             await self.save(session, reason="Soft delete")
+
 
     async def restore_deleted(self, session: ProfileSession):
         """
@@ -416,34 +384,26 @@ class TenantRecordSchema(BaseRecordSchema):
 
     tenant_id = fields.Str(
         required=True,
-        metadata={
-            "description": "Tenant Record identifier",
-            "example": UUIDFour.EXAMPLE,
-        },
+        description="Tenant Record identifier",
+        example=UUIDFour.EXAMPLE,
     )
 
     tenant_name = fields.Str(
         required=True,
-        metadata={
-            "description": "Proposed name of Tenant",
-            "example": "line of business short name",
-        },
+        description="Proposed name of Tenant",
+        example="line of business short name",
     )
 
     contact_email = fields.Str(
         required=True,
-        metadata={
-            "description": "Email used to contact this Tenant",
-            "example": "tmp@emailserver.com",
-        },
+        description="Email used to contact this Tenant",
+        example="tmp@emailserver.com",
     )
 
     state = fields.Str(
         required=True,
-        metadata={
-            "description": "The state of the tenant.",
-            "example": TenantRecord.STATE_ACTIVE,
-        },
+        description="The state of the tenant.",
+        example=TenantRecord.STATE_ACTIVE,
         validate=validate.OneOf(
             [
                 TenantRecord.STATE_ACTIVE,
@@ -454,56 +414,42 @@ class TenantRecordSchema(BaseRecordSchema):
 
     wallet_id = fields.Str(
         required=False,
-        metadata={
-            "description": "Tenant Wallet Record identifier",
-            "example": UUIDFour.EXAMPLE,
-        },
+        description="Tenant Wallet Record identifier",
+        example=UUIDFour.EXAMPLE,
     )
 
     connect_to_endorser = fields.List(
-        fields.Dict(
-            metadata={"description": "Endorser and ledger config"}, required=False
-        ),
-        metadata={
-            "example": json.dumps(ENDORSER_LEDGER_CONFIG_EXAMPLE),
-        },
+        fields.Dict(description="Endorser and ledger config", required=False),
+        example=json.dumps(ENDORSER_LEDGER_CONFIG_EXAMPLE),
         required=False,
         attribute="connected_to_endorsers",
     )
 
     created_public_did = fields.List(
-        fields.Str(metadata={"description": "Ledger id"}),
+        fields.Str(description="Ledger id"),
         required=False,
     )
 
     auto_issuer = fields.Bool(
         required=False,
-        metadata={
-            "description": "True if tenant can make itself issuer, false if only innkeeper can",
-        },
-        dump_default=False,
+        description="True if tenant can make itself issuer, false if only innkeeper can",
+        default=False,
     )
 
     enable_ledger_switch = fields.Bool(
         required=False,
-        metadata={
-            "description": "True if tenant can switch endorser/ledger",
-        },
-        dump_default=False,
+        description="True if tenant can switch endorser/ledger",
+        default=False,
     )
 
     curr_ledger_id = fields.Str(
         required=False,
-        metadata={
-            "description": "Current ledger identifier",
-        },
+        description="Current ledger identifier",
     )
     deleted_at = fields.Str(
         required=False,
-        metadata={
-            "description": "Timestamp of the deletion",
-            "example": "2023-10-30T01:01:01Z",
-        },
+        description="Timestamp of the deletion",
+        example="2023-10-30T01:01:01Z",
     )
 
 
@@ -604,23 +550,17 @@ class TenantAuthenticationApiRecordSchema(BaseRecordSchema):
 
     tenant_authentication_api_id = fields.Str(
         required=True,
-        metadata={
-            "description": "Tenant Authentication API Record identifier",
-            "example": UUIDFour.EXAMPLE,
-        },
+        description="Tenant Authentication API Record identifier",
+        example=UUIDFour.EXAMPLE,
     )
 
     tenant_id = fields.Str(
         required=False,
-        metadata={
-            "description": "Tenant Record identifier",
-            "example": UUIDFour.EXAMPLE,
-        },
+        description="Tenant Record identifier",
+        example=UUIDFour.EXAMPLE,
     )
 
     alias = fields.Str(
         required=True,
-        metadata={
-            "description": "Alias description for this API key",
-        },
+        description="Alias description for this API key",
     )

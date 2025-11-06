@@ -1,12 +1,13 @@
 import bcrypt
 import logging
 import uuid
-from datetime import datetime, timedelta, UTC
+from datetime import datetime, timedelta
 
-from acapy_agent.messaging.models.openapi import OpenAPISchema
+from aries_cloudagent.core.profile import Profile
+from aries_cloudagent.messaging.models.openapi import OpenAPISchema
 from marshmallow import fields
 
-from .models import ReservationRecord, TenantAuthenticationApiRecord, TenantRecord
+from .models import ReservationRecord, TenantAuthenticationApiRecord
 
 
 from . import TenantManager
@@ -18,15 +19,11 @@ class EndorserLedgerConfigSchema(OpenAPISchema):
     """Schema for EndorserLedgerConfig."""
 
     endorser_alias = fields.Str(
-        metadata={
-            "description": "Endorser alias/identifier",
-        },
+        description="Endorser alias/identifier",
         required=True,
     )
     ledger_id = fields.Str(
-        metadata={
-            "description": "Ledger identifier",
-        },
+        description="Ledger identifier",
         required=True,
     )
 
@@ -36,40 +33,28 @@ class TenantConfigSchema(OpenAPISchema):
 
     connect_to_endorser = fields.List(
         fields.Nested(EndorserLedgerConfigSchema()),
-        metadata={
-            "description": "Endorser config",
-        },
+        description="Endorser config",
     )
     create_public_did = fields.List(
         fields.Str(
-            metadata={
-                "description": "Ledger identifier",
-            },
+            description="Ledger identifier",
             required=False,
         ),
-        metadata={
-            "description": "Public DID config",
-        },
+        description="Public DID config",
     )
     auto_issuer = fields.Bool(
         required=False,
-        metadata={
-            "description": "True if tenant can make itself issuer, false if only innkeeper can",
-        },
-        dump_default=False,
+        description="True if tenant can make itself issuer, false if only innkeeper can",
+        default=False,
     )
     enable_ledger_switch = fields.Bool(
         required=False,
-        metadata={
-            "description": "True if tenant can switch endorser/ledger",
-        },
-        dump_default=False,
+        description="True if tenant can switch endorser/ledger",
+        default=False,
     )
     curr_ledger_id = fields.Str(
         required=False,
-        metadata={
-            "description": "Current ledger identifier",
-        },
+        description="Current ledger identifier",
     )
 
 
@@ -84,7 +69,7 @@ def generate_reservation_token_data(expiry_minutes: int):
     LOGGER.info(f"_hash = {_hash}")
 
     minutes = expiry_minutes
-    _expiry = datetime.now(UTC) + timedelta(minutes=minutes)
+    _expiry = datetime.utcnow() + timedelta(minutes=minutes)
     LOGGER.info(f"_expiry = {_expiry}")
 
     return _pwd, _salt, _hash, _expiry
@@ -129,9 +114,7 @@ async def refresh_registration_token(reservation_id: str, manager: TenantManager
             )
         except Exception as err:
             LOGGER.error("Failed to retrieve reservation: %s", err)
-            raise ReservationException(
-                "Could not retrieve reservation record."
-            ) from err
+            raise ReservationException("Could not retrieve reservation record.") from err
 
         if reservation.state != ReservationRecord.STATE_APPROVED:
             raise ReservationException("Only approved reservations can refresh tokens.")
@@ -157,8 +140,7 @@ async def refresh_registration_token(reservation_id: str, manager: TenantManager
 
         LOGGER.info("Refreshed token for reservation %s", reservation_id)
 
-        return _pwd
-
+        return _pwd 
 
 def generate_api_key_data():
     _key = str(uuid.uuid4().hex)
@@ -174,8 +156,6 @@ def generate_api_key_data():
 
 
 async def create_api_key(rec: TenantAuthenticationApiRecord, manager: TenantManager):
-    if rec.state == TenantRecord.STATE_DELETED:
-        raise ValueError("Tenant is disabled")
     async with manager.profile.session() as session:
         _key, _salt, _hash = generate_api_key_data()
         rec.api_key_token_salt = _salt.decode("utf-8")
