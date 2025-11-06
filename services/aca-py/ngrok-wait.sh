@@ -8,7 +8,7 @@ set -e
 if [[ "${TRACTION_ENV}" == "ec2" ]]; then
     echo "Using EC2 endpoint configuration..."
 
-    EC2_ENDPOINT="https://${EC2_PUBLIC_DNS}"
+    EC2_ENDPOINT="https://${EC2_PUBLIC_DNS}:${TRACTION_ACAPY_HTTP_PORT}"
 
     # Mimic ngrok wait loop (optional, ensures endpoint variable is initialized)
     while [ -z "$EC2_ENDPOINT" ] || [ "$EC2_ENDPOINT" = "null" ]; do
