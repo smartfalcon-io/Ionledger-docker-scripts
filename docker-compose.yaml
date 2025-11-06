@@ -216,7 +216,7 @@ services:
       - SCHEMA_NAME=${SCHEMA_NAME}
       - SCHEMA_VERSION=${SCHEMA_VERSION}
       - CRED_DEF_ID=${CRED_DEF_ID}
-      - TOKEN_URL=TOKEN_URL=https://bpass.ionledger.co.in/admin/realms/master/protocol/openid-connect/token
+      - TOKEN_URL=https://bpass.ionledger.co.in/realms/master/protocol/openid-connect/token
       - KEYCLOAK_URL=${KEYCLOAK_URL}
       - REALM=${REALM}
     networks: 
@@ -239,7 +239,7 @@ services:
       KC_HOSTNAME: bpass.ionledger.co.in
       KC_HOSTNAME_STRICT: false
       KC_HOSTNAME_STRICT_HTTPS: false
-      KC_HTTP_RELATIVE_PATH: /admin
+      KC_HTTP_RELATIVE_PATH: ""
       KC_PROXY: edge
     ports:
       - "8080:8080"
