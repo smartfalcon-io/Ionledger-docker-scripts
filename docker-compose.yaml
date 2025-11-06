@@ -217,7 +217,7 @@ services:
       - SCHEMA_VERSION=${SCHEMA_VERSION}
       - CRED_DEF_ID=${CRED_DEF_ID}
       - TOKEN_URL=https://bpass.ionledger.co.in/realms/master/protocol/openid-connect/token
-      - ADMIN_API_BASE = f"{KEYCLOAK_URL}admin/realms/{REALM}"
+      - ADMIN_API_BASE=f"{KEYCLOAK_URL}admin/realms/{REALM}"
       - REALM=${REALM}
     networks: 
       - app-network
