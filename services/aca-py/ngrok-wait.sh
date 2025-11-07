@@ -1,22 +1,20 @@
+#!/bin/bash
 
+echo "-------------------------------------------------------"
+echo "Initializing ACA-Py startup configuration..."
+echo "-------------------------------------------------------"
 
-
+# --- EC2 environment setup ---
 if [[ "${TRACTION_ENV}" == "ec2" ]]; then
     echo "Using EC2 endpoint configuration..."
-
-    EC2_ENDPOINT="https://${EC2_PUBLIC_DNS}/traction"
-
-    # Mimic ngrok wait loop (optional, ensures endpoint variable is initialized)
-    while [ -z "$EC2_ENDPOINT" ] || [ "$EC2_ENDPOINT" = "null" ]; do
-        echo "EC2 endpoint not ready, sleeping 5 seconds..."
-        sleep 5
-    done
-
-    export ACAPY_ENDPOINT="$EC2_ENDPOINT"
+    export ACAPY_ENDPOINT="https://${EC2_PUBLIC_DNS}/traction"
+else
+    echo "Using default local endpoint configuration..."
+    export ACAPY_ENDPOINT="http://localhost:${TRACTION_ACAPY_HTTP_PORT}"
 fi
 
 echo "-------------------------------------------------------"
-echo "Fetched endpoint: ${ACAPY_ENDPOINT}"
+echo "Fetched endpoint: [$ACAPY_ENDPOINT]"
 echo "Starting ACA-Py agent..."
 echo "-------------------------------------------------------"
 
@@ -34,4 +32,4 @@ exec aca-py start \
     --plugin basicmessage_storage.v1_0 \
     --plugin connection_update.v1_0 \
     --plugin multitenant_provider.v1_0 \
-    --plugin rpc.v1_0 \
+    --plugin rpc.v1_0
