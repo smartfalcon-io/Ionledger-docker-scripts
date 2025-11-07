@@ -248,8 +248,6 @@ services:
       KC_HTTP_RELATIVE_PATH: "/auth"  # ✅ standard Keycloak admin path
       QUARKUS_HTTP_PORT: "8080"
       KC_PROXY_HEADERS: xforwarded
-      KC_HTTPS_CERTIFICATE_FILE: /etc/x509/https/tls.crt
-      KC_HTTPS_CERTIFICATE_KEY_FILE: /etc/x509/https/tls.key
 
     ports:
       - "8080:8080"
