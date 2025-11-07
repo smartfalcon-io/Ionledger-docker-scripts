@@ -232,22 +232,20 @@ services:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
 
-      # Database configuration
+      # Database config
       KC_DB: postgres
       KC_DB_URL_HOST: postgres
       KC_DB_URL_DATABASE: keycloak
       KC_DB_USERNAME: keycloak
       KC_DB_PASSWORD: keycloak
 
-      # Hostname and HTTPS proxy settings
+      # Host and proxy settings
       KC_HOSTNAME: bpass.ionledger.co.in
       KC_HOSTNAME_STRICT: "false"
       KC_HOSTNAME_STRICT_HTTPS: "false"
-      KC_PROXY: edge
-      KC_HTTP_ENABLED: "true"
-
-      # HTTP path and port
-      KC_HTTP_RELATIVE_PATH: "/"
+      KC_PROXY: edge          # ✅ tells Keycloak it is behind a reverse proxy
+      KC_HTTP_ENABLED: "true" # ✅ allow internal HTTP between Nginx ↔ container
+      KC_HTTP_RELATIVE_PATH: "/auth"  # ✅ standard Keycloak admin path
       QUARKUS_HTTP_PORT: "8080"
 
     ports:
@@ -256,6 +254,7 @@ services:
       - postgres
     networks:
       - app-network
+
 
 
 
