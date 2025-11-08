@@ -225,7 +225,7 @@ services:
   keycloak:
    container_name: keycloak
    image: quay.io/keycloak/keycloak:26.3.3
-   command: start --optimized
+   command: start-dev
    volumes:
       - keycloak_data:/opt/keycloak/data
    environment:
@@ -248,9 +248,7 @@ services:
      KC_HTTP_ENABLED: "true"
      KC_HTTP_RELATIVE_PATH: "/auth"
      KC_PROXY_HEADERS: "xforwarded"
-     KC_HTTPS_PROTOCOLS: "TLSv1.3,TLSv1.2"
-     KC_LOG_LEVEL: "INFO,org.keycloak.events=DEBUG"
-
+     
 
     # Optional - avoid redirect loops
      KC_HOSTNAME_URL: "https://bpass.ionledger.co.in"
