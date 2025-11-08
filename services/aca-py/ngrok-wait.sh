@@ -1,14 +1,10 @@
+set -e  # Exit immediately on error
 
-
-set -e  
-
-# export EC2_PUBLIC_DNS="ec2-13-126-137-120.ap-south-1.compute.amazonaws.com"
-# export EC2_PUBLIC_IP="13.126.137.120"
 
 if [[ "${TRACTION_ENV}" == "ec2" ]]; then
     echo "Using EC2 endpoint configuration..."
 
-    EC2_ENDPOINT="https://${EC2_PUBLIC_DNS}/traction"
+    EC2_ENDPOINT="http://${EC2_PUBLIC_DNS}:${TRACTION_ACAPY_HTTP_PORT}"
 
     # Mimic ngrok wait loop (optional, ensures endpoint variable is initialized)
     while [ -z "$EC2_ENDPOINT" ] || [ "$EC2_ENDPOINT" = "null" ]; do
@@ -16,13 +12,11 @@ if [[ "${TRACTION_ENV}" == "ec2" ]]; then
         sleep 5
     done
 
-    # export ACAPY_ENDPOINT="$EC2_ENDPOINT"
-        export ACAPY_ENDPOINT="http://traction-agent:8030"
-
+    export ACAPY_ENDPOINT=$EC2_ENDPOINT
 fi
 
 echo "-------------------------------------------------------"
-echo "Fetched endpoint: ${ACAPY_ENDPOINT}"
+echo "Fetched endpoint: [$ACAPY_ENDPOINT]"
 echo "Starting ACA-Py agent..."
 echo "-------------------------------------------------------"
 
