@@ -217,7 +217,7 @@ services:
       - SCHEMA_NAME=${SCHEMA_NAME}
       - SCHEMA_VERSION=${SCHEMA_VERSION}
       - CRED_DEF_ID=${CRED_DEF_ID}
-      - TOKEN_URL=https://bpass.ionledger.co.in/auth/realms/master/protocol/openid-connect/token
+      - TOKEN_URL=http://keycloak:8080/admin/realms/master/protocol/openid-connect/token
       - ADMIN_API_BASE=f"{KEYCLOAK_URL}admin/realms/{REALM}"
       - REALM=${REALM}
     networks: 
@@ -232,9 +232,10 @@ services:
       - start
       - --hostname=bpass.ionledger.co.in
       - --hostname-strict=false
+      - --proxy=edge
       - --http-enabled=true
       - --http-relative-path=/auth
-      - --proxy-headers=xforwarded
+
    volumes:
       - keycloak_data:/opt/keycloak/data
    environment:
@@ -252,15 +253,15 @@ services:
     # Hostname and proxy config
      KC_HOSTNAME: "bpass.ionledger.co.in"
      KC_HOSTNAME_STRICT: "false"
-     KC_PROXY: "edge"
+     KC_HOSTNAME_STRICT_HTTPS: "true"
      KC_HTTP_ENABLED: "true"
      KC_HTTP_RELATIVE_PATH: "/auth"
      KC_PROXY_HEADERS: "xforwarded"
      
 
     # Optional - avoid redirect loops
-     KC_HOSTNAME_URL: "https://bpass.ionledger.co.in/auth"
-     KC_HOSTNAME_ADMIN_URL: "https://bpass.ionledger.co.in/auth"
+     KC_HOSTNAME_URL: "https://bpass.ionledger.co.in"
+     KC_HOSTNAME_ADMIN_URL: "https://bpass.ionledger.co.in"
 
    ports:
     - "8080:8080"

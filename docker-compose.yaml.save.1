@@ -241,7 +241,6 @@ services:
     # Admin credentials
      KEYCLOAK_ADMIN: "admin"
      KEYCLOAK_ADMIN_PASSWORD: "admin"
-
     # Database config
      KC_DB: "postgres"
      KC_DB_URL_HOST: "postgres"
@@ -252,6 +251,7 @@ services:
     # Hostname and proxy config
      KC_HOSTNAME: "bpass.ionledger.co.in"
      KC_HOSTNAME_STRICT: "false"
+     KC_HOSTNAME_STRICT_HTTPS: "true"
      KC_PROXY: "edge"
      KC_HTTP_ENABLED: "true"
      KC_HTTP_RELATIVE_PATH: "/auth"
@@ -267,8 +267,7 @@ services:
    depends_on:
     - postgres
    networks:
-    - app-network
-
+    - app-networ
 
 
 
