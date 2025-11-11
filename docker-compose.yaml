@@ -233,7 +233,7 @@ services:
       - --import-realm
    volumes:
       - keycloak_data:/opt/keycloak/data
-      - ./keycloak/realms:/opt/keycloak/data/import
+      - ./services/keycloak/realms:/opt/keycloak/data/import
    environment:
     # Admin credentials
      KEYCLOAK_ADMIN: "admin"
