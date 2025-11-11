@@ -193,7 +193,7 @@ services:
 
   issuer-apis: 
     container_name: issuer-apis
-    image: ghcr.io/smartfalcon-io/batterypassport_issuer_apis-fastapi:1.0
+    image: ghcr.io/smartfalcon-io/batterypassport_issuer_apis-fastapi:2.0
     restart: unless-stopped
     ports:
       - "8087:8087"
