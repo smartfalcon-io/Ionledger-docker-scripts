@@ -229,12 +229,7 @@ services:
    container_name: keycloak
    image: quay.io/keycloak/keycloak:26.3.3
    command:
-      - start
-      - --hostname=bpass.ionledger.co.in
-      - --hostname-strict=false
-      - --http-enabled=true
-      - --http-relative-path=/auth
-      - --proxy-headers=xforwarded
+      - start-dev
    volumes:
       - keycloak_data:/opt/keycloak/data
    environment:
