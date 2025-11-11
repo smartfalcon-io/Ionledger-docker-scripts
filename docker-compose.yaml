@@ -181,7 +181,7 @@ services:
 
   ion-ledger-web-ui: 
     container_name: ion-ledger-web-ui
-    image: ghcr.io/smartfalcon-io/ionledger-web-ui-did-indy:latest
+    image: ghcr.io/smartfalcon-io/ionledger-web-ui-did-indy:v0.0.1
     restart: unless-stopped
     ports:
       - "3000:80"
@@ -230,8 +230,10 @@ services:
    image: quay.io/keycloak/keycloak:26.3.3
    command:
       - start-dev
+      - --import-realm
    volumes:
       - keycloak_data:/opt/keycloak/data
+      - ./keycloak/realms:/opt/keycloak/data/import
    environment:
     # Admin credentials
      KEYCLOAK_ADMIN: "admin"
