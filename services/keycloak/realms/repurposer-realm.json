@@ -31,7 +31,7 @@
   ],
   "users": [
     {
-      "repurposername": "repurposer@ionledger.co.in",
+      "username": "repurposer@ionledger.co.in",
       "enabled": true,
       "emailVerified": true,
       "firstName": "Regular",
