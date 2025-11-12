@@ -32,14 +32,14 @@
   ],
   "users": [
     {
-      "username": "superadmin",
+      "username": "admin@ionledger.co.in",
       "enabled": true,
       "emailVerified": true,
       "firstName": "Super",
       "lastName": "Admin",
       "email": "superadmin@example.com",
       "credentials": [
-        { "type": "password", "value": "super123", "temporary": false }
+        { "type": "password", "value": "admin@123", "temporary": false }
       ],
       "realmRoles": ["superadmin", "admin"]
     }

@@ -32,14 +32,14 @@
   ],
   "users": [
     {
-      "username": "issuer_admin",
+      "username": "issuer@ionledger.co.in",
       "enabled": true,
       "emailVerified": true,
       "firstName": "Issuer",
       "lastName": "Admin",
       "email": "issuer_admin@example.com",
       "credentials": [
-        { "type": "password", "value": "issuer123", "temporary": false }
+        { "type": "password", "value": "issuer@123", "temporary": false }
       ],
       "realmRoles": ["admin", "issuer"]
     }

@@ -1,28 +1,27 @@
 {
-  "realm": "oem",
+  "realm": "repurposer",
   "enabled": true,
   "roles": {
     "realm": [
-      { "name": "admin", "description": "Administrator role" },
-      { "name": "issuer", "description": "Issuer role" },
-      { "name": "user", "description": "Regular user role" }
+      { "name": "repurposer", "description": "Regular repurposer role" },
+      { "name": "admin", "description": "Administrator role" }
     ]
   },
   "clients": [
     {
-      "clientId": "oem-api",
+      "clientId": "repurposer-api",
       "enabled": true,
       "publicClient": false,
       "directAccessGrantsEnabled": true,
       "serviceAccountsEnabled": true,
       "protocol": "openid-connect",
       "clientAuthenticatorType": "client-secret",
-      "secret": "oem-api-secret",
+      "secret": "repurposer-api-secret",
       "redirectUris": ["*"],
       "webOrigins": ["*"]
     },
     {
-      "clientId": "oem-web",
+      "clientId": "repurposer-web",
       "enabled": true,
       "publicClient": true,
       "protocol": "openid-connect",
@@ -30,18 +29,18 @@
       "webOrigins": ["*"]
     }
   ],
-  "users": [
+  "repurposers": [
     {
-      "username": "oem@ionledger.co.in",
+      "repurposername": "repurposer@ionledger.co.in",
       "enabled": true,
       "emailVerified": true,
-      "firstName": "OEM",
-      "lastName": "Admin",
-      "email": "oem_admin@example.com",
+      "firstName": "Regular",
+      "lastName": "repurposer",
+      "email": "repurposer1@example.com",
       "credentials": [
-        { "type": "password", "value": "oem@123", "temporary": false }
+        { "type": "password", "value": "repurposer@123", "temporary": false }
       ],
-      "realmRoles": ["admin", "issuer"]
+      "realmRoles": ["repurposer"]
     }
   ]
 }
