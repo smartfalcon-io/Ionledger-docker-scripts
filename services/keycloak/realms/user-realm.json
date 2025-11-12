@@ -40,7 +40,7 @@
       "credentials": [
         { "type": "password", "value": "user123", "temporary": false }
       ],
-      "realmRoles": ["user"]
+      "realmRoles": ["user","admin"]
     }
   ]
 }

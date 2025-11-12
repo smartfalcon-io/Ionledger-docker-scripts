@@ -41,7 +41,7 @@
       "credentials": [
         { "type": "password", "value": "oem123", "temporary": false }
       ],
-      "realmRoles": ["admin", "issuer"]
+      "realmRoles": ["admin", "issuer","oem"]
     }
   ]
 }

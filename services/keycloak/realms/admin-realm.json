@@ -41,7 +41,7 @@
       "credentials": [
         { "type": "password", "value": "super123", "temporary": false }
       ],
-      "realmRoles": ["superadmin", "admin"]
+      "realmRoles": ["superadmin", "admin","oem"]
     }
   ]
 }
