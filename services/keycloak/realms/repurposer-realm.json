@@ -29,7 +29,7 @@
       "webOrigins": ["*"]
     }
   ],
-  "repurposers": [
+  "users": [
     {
       "repurposername": "repurposer@ionledger.co.in",
       "enabled": true,

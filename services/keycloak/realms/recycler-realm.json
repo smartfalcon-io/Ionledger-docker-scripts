@@ -29,13 +29,13 @@
       "webOrigins": ["*"]
     }
   ],
-  "recyclers": [
+  "users": [
     {
-      "recyclername": "recycler@ionledger.co.in",
+      "username": "recycler@ionledger.co.in",
       "enabled": true,
       "emailVerified": true,
       "firstName": "Regular",
-      "lastName": "recycler",
+      "lastName": "Recycler",
       "email": "recycler1@example.com",
       "credentials": [
         { "type": "password", "value": "recycler@123", "temporary": false }
