@@ -32,14 +32,14 @@
   ],
   "users": [
     {
-      "username": "oem@ionledger.co.in",
+      "username": "oem_admin",
       "enabled": true,
       "emailVerified": true,
       "firstName": "OEM",
       "lastName": "Admin",
       "email": "oem_admin@example.com",
       "credentials": [
-        { "type": "password", "value": "oem@123", "temporary": false }
+        { "type": "password", "value": "oem123", "temporary": false }
       ],
       "realmRoles": ["admin", "issuer"]
     }

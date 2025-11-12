@@ -1,27 +1,27 @@
 {
-  "realm": "recycler",
+  "realm": "user",
   "enabled": true,
   "roles": {
     "realm": [
-      { "name": "recycler", "description": "Regular recycler role" },
+      { "name": "user", "description": "Regular user role" },
       { "name": "admin", "description": "Administrator role" }
     ]
   },
   "clients": [
     {
-      "clientId": "recycler-api",
+      "clientId": "user-api",
       "enabled": true,
       "publicClient": false,
       "directAccessGrantsEnabled": true,
       "serviceAccountsEnabled": true,
       "protocol": "openid-connect",
       "clientAuthenticatorType": "client-secret",
-      "secret": "recycler-api-secret",
+      "secret": "user-api-secret",
       "redirectUris": ["*"],
       "webOrigins": ["*"]
     },
     {
-      "clientId": "recycler-web",
+      "clientId": "user-web",
       "enabled": true,
       "publicClient": true,
       "protocol": "openid-connect",
@@ -31,16 +31,16 @@
   ],
   "users": [
     {
-      "username": "recycler@ionledger.co.in",
+      "username": "user1",
       "enabled": true,
       "emailVerified": true,
       "firstName": "Regular",
-      "lastName": "Recycler",
-      "email": "recycler1@example.com",
+      "lastName": "User",
+      "email": "user1@example.com",
       "credentials": [
-        { "type": "password", "value": "recycler@123", "temporary": false }
+        { "type": "password", "value": "user123", "temporary": false }
       ],
-      "realmRoles": ["recycler"]
+      "realmRoles": ["user"]
     }
   ]
 }
